@@ -19,14 +19,14 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
 
   <!-- bootstrap core css -->
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
 
   <!-- fonts style -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700&display=swap" rel="stylesheet">
   <!-- Custom styles for this template -->
-  <link href="css/style.css" rel="stylesheet" />
+  <link href="/static/css/style.css" rel="stylesheet" />
   <!-- responsive style -->
-  <link href="css/responsive.css" rel="stylesheet" />
+  <link href="/static/css/responsive.css" rel="stylesheet" />
 </head>
 
 <body class="sub_page">
@@ -35,8 +35,8 @@
     <header class="header_section">
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container">
-          <a class="navbar-brand" href="index.html">
-            <img src="images/logo.png" alt="" />
+          <a class="navbar-brand" href="index">
+            <img src="/static/images/logo.png" alt="" />
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,32 +46,35 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav  ">
               <li class="nav-item ">
-                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item active">
-                <a class="nav-link" href="about.html"> About</a>
+                <a class="nav-link" href="about"> About</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="shop.html">Shop </a>
+                <a class="nav-link" href="shop">Shop </a>
               </li>
+             
               <li class="nav-item">
-                <a class="nav-link" href="furniture.html"> Furniture </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="contact.html">Contact us</a>
+                <a class="nav-link" href="contact">Contact us</a>
               </li>
             </ul>
-            <div class="user_option">
+            {% if current_user.is_authenticated %}
+              <div class="user_option">
+                <a href="">
+                <img src="/static/images/user.png" alt="">
+                <a class="nav-link" href="/logout">logout</a>
+                </a>
+              </div>
+              {% else %}
+              <div class="user_option">
               <a href="">
-                <img src="images/user.png" alt="">
-                <span>
-                  Login
-                </span>
+              <img src="/static/images/user.png" alt="">
+              <a class="nav-link" href="login">login</a>
+              <a class="nav-link" href="sign_up">Register</a>
               </a>
-              <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
-                <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-              </form>
-            </div>
+              </div>
+              {% endif %}
           </div>
           <div>
             <div class="custom_menu-btn ">
@@ -110,17 +113,25 @@
 
             </div>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua. Ut enim ad minim veniam
+             Welcome to Vintage Grace, where we have been providing high-quality furniture for over a century. Established in 1347, our family-owned business has a long-standing reputation for exceptional craftsmanship and attention to detail.
             </p>
-            <a href="">
-              Read More
-            </a>
+           <p>
+		   Our mission is to bring you furniture that is not only beautiful and timeless but also built to last for generations. We believe that furniture should be an investment in your home, and we take great pride in offering a wide range of styles and designs that are carefully curated to fit any aesthetic.
+		   </p>
+		   <p>
+		   At Vintage Grace, we understand that your home is a reflection of your personality and style, and our experienced team is here to help you create the perfect space. From classic to contemporary designs, our selection of furniture is handcrafted using only the finest materials and techniques.
+		   </p>
+		   <p>
+		   We believe that the key to our success lies in our commitment to customer service. Our knowledgeable and friendly staff are dedicated to helping you find the perfect piece of furniture to fit your needs and budget. Whether you are furnishing a new home or simply looking to refresh your current space, we are here to help.
+		   </p>
+		   <p>
+		   Thank you for choosing Vintage Grace, and we look forward to helping you create a beautiful and functional home that you will love for years to come.
+		   </p>
           </div>
         </div>
         <div class="col-md-6">
           <div class="img-box">
-            <img src="images/about-img.png" alt="">
+            <img src="/static/images/vintagegrace.png" alt="">
           </div>
         </div>
       </div>
@@ -147,26 +158,26 @@
             </h5>
             <div>
               <div class="img-box">
-                <img src="images/location-white.png" width="18px" alt="">
+                <img src="/static/images/location-white.png" width="18px" alt="">
               </div>
               <p>
-                Address
+               National College of Ireland, Mayor Street Lower, International Financial Services Centre, Dublin 1
               </p>
             </div>
             <div>
               <div class="img-box">
-                <img src="images/telephone-white.png" width="12px" alt="">
+                <img src="/static/images/telephone-white.png" width="12px" alt="">
               </div>
               <p>
-                +01 1234567890
+                 +353 0000000000
               </p>
             </div>
             <div>
               <div class="img-box">
-                <img src="images/envelope-white.png" width="18px" alt="">
+                <img src="/static/images/envelope-white.png" width="18px" alt="">
               </div>
               <p>
-                demo@gmail.com
+				info@vintagegrace.com
               </p>
             </div>
           </div>
@@ -174,10 +185,10 @@
         <div class="col-md-3">
           <div class="info_info">
             <h5>
-              Informations
+               Important
             </h5>
             <p>
-              ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+              We believe in equality for everyone. Our shop is inclusive and open to all.
             </p>
           </div>
         </div>
@@ -189,41 +200,41 @@
             </h5>
             <div class="insta_container">
               <div>
-                <a href="">
+               
                   <div class="insta-box b-1">
-                    <img src="images/i-1.jpg" alt="">
+                    <img src="/static/images/i-1.jpg" alt="">
                   </div>
-                </a>
-                <a href="">
+                
+               
                   <div class="insta-box b-2">
-                    <img src="images/i-2.jpg" alt="">
+                    <img src="/static/images/i-2.jpg" alt="">
                   </div>
-                </a>
+               
               </div>
 
               <div>
-                <a href="">
+               
                   <div class="insta-box b-3">
-                    <img src="images/i-3.jpg" alt="">
+                    <img src="/static/images/i-3.jpg" alt="">
                   </div>
-                </a>
-                <a href="">
+               
+               
                   <div class="insta-box b-4">
-                    <img src="images/i-4.jpg" alt="">
+                    <img src="/static/images/i-4.jpg" alt="">
                   </div>
-                </a>
+              
               </div>
               <div>
-                <a href="">
+                
                   <div class="insta-box b-3">
-                    <img src="images/i-5.jpg" alt="">
+                    <img src="/static/images/i-5.jpg" alt="">
                   </div>
-                </a>
-                <a href="">
+             
+                
                   <div class="insta-box b-4">
-                    <img src="images/i-6.jpg" alt="">
+                    <img src="/static/images/i-6.jpg" alt="">
                   </div>
-                </a>
+               
               </div>
             </div>
           </div>
@@ -231,27 +242,18 @@
         <div class="col-md-3">
           <div class="info_form ">
             <h5>
-              Newsletter
+              Connect with us
             </h5>
-            <form action="">
-              <input type="email" placeholder="Enter your email">
-              <button>
-                Subscribe
-              </button>
-            </form>
             <div class="social_box">
-              <a href="">
-                <img src="images/fb.png" alt="">
-              </a>
-              <a href="">
-                <img src="images/twitter.png" alt="">
-              </a>
-              <a href="">
-                <img src="images/linkedin.png" alt="">
-              </a>
-              <a href="">
-                <img src="images/youtube.png" alt="">
-              </a>
+
+                <img src="/static/images/fb.png" alt="">
+
+                <img src="/static/images/twitter.png" alt="">
+
+                <img src="/static/images/linkedin.png" alt="">
+
+                <img src="/static/images/youtube.png" alt="">
+
             </div>
           </div>
         </div>
@@ -261,21 +263,9 @@
 
   <!-- end info_section -->
 
-
-  <!-- footer section -->
-  <section class="container-fluid footer_section ">
-    <div class="container">
-      <p>
-        &copy; 2019 All Rights Reserved By
-        <a href="https://html.design/">Free Html Templates</a>
-      </p>
-    </div>
-  </section>
-  <!-- end  footer section -->
-
-
-  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-  <script type="text/javascript" src="js/bootstrap.js"></script>
+ 
+  <script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="/static/js/bootstrap.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js">
   </script>
   <script type="text/javascript">
