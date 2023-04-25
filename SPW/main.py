@@ -1,8 +1,8 @@
 
 # Import required modules
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, logout_user
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
 app = Flask(__name__)
 # Define connection uri for your database
@@ -17,10 +17,9 @@ login_manager.login_view = "users.login"
 login_manager.login_message = "Please login to continue"
 login_manager.login_message_category = "info"
 
-# @login_manager.unauthorized_handler
-# def unauthorized():
-#     # do stuff
-#     return a_response
+@login_manager.unauthorized_handler
+def unauthorized():
+    return redirect('/login')
 
 class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,7 +37,7 @@ with app.app_context():
 
 
 @login_manager.user_loader
-def loader_user(user_id):
+def user_loader(user_id):
     return Users.query.get(user_id)
 
 
@@ -53,7 +52,7 @@ def register():
     return render_template("sign_up.html")
 
 
-@app.route("/login.html", methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         user = Users.query.filter_by(username=request.form.get("username")).first()
@@ -64,6 +63,7 @@ def login():
 
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect(url_for("home"))
@@ -73,27 +73,23 @@ def logout():
 def home():
     return render_template("index.html")
 
-@app.route("/index.html")
+@app.route("/index")
 def index():
     return render_template("index.html")
 
 
-@app.route("/about.html")
+@app.route("/about")
 def about_us():
     return render_template("about.html")
 
 
-@app.route("/shop.html")
+@app.route("/shop")
+@login_required
 def shop():
     return render_template("shop.html")
 
 
-@app.route("/furniture.html")
-def furniture():
-    return render_template("furniture.html")
-
-
-@app.route("/contact.html")
+@app.route("/contact")
 def contact():
     return render_template("contact.html")
 
