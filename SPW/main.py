@@ -1,10 +1,14 @@
+
+# Import required modules
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user
 
 app = Flask(__name__)
+# Define connection uri for your database
 app.config["SQLALCHEMY_DATABASE_URI"] = "mssql+pyodbc://root:root@localhost:1433/users_db?driver=ODBC Driver 17 for SQL Server"
 app.config["SECRET_KEY"] = "abc"
+app.static_folder = "C:/Users/kumar/Documents/GitHub/spwebapp/SPW/static"
 db = SQLAlchemy()
 
 login_manager = LoginManager()
@@ -67,7 +71,12 @@ def logout():
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("index.html")
+
+
+@app.route("/about.html")
+def about_us():
+    return render_template("about.html")
 
 
 if __name__ == "__main__":
