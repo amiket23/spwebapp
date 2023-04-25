@@ -61,17 +61,22 @@
                 <a class="nav-link" href="contact.html">Contact us</a>
               </li>
             </ul>
-            <div class="user_option">
-              <a href="">
-                <img src="/static/images/user.png" alt="">
-                <span>
-                  Login
-                </span>
+             {% if current_user.is_authenticated %}
+				  <div class="user_option">
+				  <a href="">
+				  <img src="/static/images/user.png" alt="">
+				  <a class="nav-link" href="/logout">logout</a>
+                </a>
+              </div>
+              {% else %}
+              <div class="user_option">
+				  <a href="">
+				  <img src="/static/images/user.png" alt="">
+				  <a class="nav-link" href="login">login</a>
+				  <a class="nav-link" href="sign_up">Register</a>
               </a>
-              <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
-                <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-              </form>
-            </div>
+              </div>
+              {% endif %}
           </div>
           <div>
             <div class="custom_menu-btn ">
@@ -115,14 +120,18 @@
               </h5>
             </div>
             <div class="img-box">
-              <img src="/static/images/slider-img.png" alt="">
+              <img src="/static/images/chair.png" alt="">
             </div>
             <div class="detail-box">
-              <h6 class="price">
-                $100
+              <br>
+			  <h6 class="brand">
+                Brand: Touchwood
               </h6>
               <h6>
-                Chair
+                Product: Chair
+              </h6>
+			  <h6 class="price">
+                Price: €2
               </h6>
             </div>
           </a>
@@ -130,14 +139,18 @@
         <div class="box">
           <a href="">
             <div class="img-box">
-              <img src="/static/images/slider-img.png" alt="">
+              <img src="/static/images/table.png" alt="">
             </div>
             <div class="detail-box">
-              <h6 class="price">
-                $100
+              <br>
+			  <h6 class="brand">
+                Brand: Touchwood
               </h6>
               <h6>
-                Chair
+                Product: Table
+              </h6>
+			  <h6 class="price">
+                Price: €3
               </h6>
             </div>
           </a>
@@ -145,14 +158,18 @@
         <div class="box">
           <a href="">
             <div class="img-box">
-              <img src="/static/images/slider-img.png" alt="">
+              <img src="/static/images/bed1.png" alt="">
             </div>
             <div class="detail-box">
-              <h6 class="price">
-                $100
+              <br>
+			  <h6 class="brand">
+                Brand: Touchwood
               </h6>
               <h6>
-                Chair
+                Product: Bed
+              </h6>
+			  <h6 class="price">
+                Price: €1
               </h6>
             </div>
           </a>
@@ -160,30 +177,280 @@
         <div class="box">
           <a href="">
             <div class="img-box">
-              <img src="/static/images/slider-img.png" alt="">
+              <img src="/static/images/wardrobe.png" alt="">
             </div>
             <div class="detail-box">
-              <h6 class="price">
-                $100
+              <br>
+			  <h6 class="brand">
+                Brand: Touchwood
               </h6>
               <h6>
-                Chair
+                Product: Wardrobe
+              </h6>
+			  <h6 class="price">
+                Price: €1
               </h6>
             </div>
           </a>
         </div>
       </div>
-      <a href="" class="brand-btn">
-        See More
-      </a>
+      
     </div>
+  
+    <div class="container">
+    
+      <div class="brand_container layout_padding2">
+        <div class="box">
+          <a href="">
+            
+            <div class="img-box">
+              <img src="/static/images/chair2.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Starwood
+              </h6>
+              <h6>
+                Product: Chair
+              </h6>
+			  <h6 class="price">
+                Price: €2
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="/static/images/table2.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Starwood
+              </h6>
+              <h6>
+                Product: Table
+              </h6>
+			  <h6 class="price">
+                Price: €2
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="/static/images/bed2.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Starwood
+              </h6>
+              <h6>
+                Product: Bed
+              </h6>
+			  <h6 class="price">
+                Price: €2
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="/static/images/wardrobe2.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Starwood
+              </h6>
+              <h6>
+                Product: Wardrobe
+              </h6>
+			  <h6 class="price">
+                Price: €2
+              </h6>
+            </div>
+          </a>
+        </div>
+      </div>
+      
+    </div>
+	<div class="container">
+    
+      <div class="brand_container layout_padding2">
+        <div class="box">
+          <a href="">
+            
+            <div class="img-box">
+              <img src="/static/images/chair3.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Woodensolly
+              </h6>
+              <h6>
+                Product: Chair
+              </h6>
+			  <h6 class="price">
+                Price: €2
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="/static/images/table3.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Woodensolly
+              </h6>
+              <h6>
+                Product: Table
+              </h6>
+			  <h6 class="price">
+                Price: €2
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="/static/images/bed3.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Woodensolly
+              </h6>
+              <h6>
+                Product: Bed
+              </h6>
+			  <h6 class="price">
+                Price: €2
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="/static/images/wardrobe3.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Woodensolly
+              </h6>
+              <h6>
+                Product: Wardrobe
+              </h6>
+			  <h6 class="price">
+                Price: €2
+              </h6>
+            </div>
+          </a>
+        </div>
+      </div>
+      
+    </div>
+	<div class="container">
+    
+      <div class="brand_container layout_padding2">
+        <div class="box">
+          <a href="">
+           
+            <div class="img-box">
+              <img src="/static/images/chair4.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Lillywood
+              </h6>
+              <h6>
+                Product: Chair
+              </h6>
+			  <h6 class="price">
+                Price: €2
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="/static/images/table4.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Lillywood
+              </h6>
+              <h6>
+                Product: Table
+              </h6>
+			  <h6 class="price">
+                Price: €1
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="/static/images/bed4.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Lillywood
+              </h6>
+              <h6>
+                Product: Bed
+              </h6>
+			  <h6 class="price">
+                Price: €3
+              </h6>
+            </div>
+          </a>
+        </div>
+        <div class="box">
+          <a href="">
+            <div class="img-box">
+              <img src="/static/images/wardrobe4.png" alt="">
+            </div>
+            <div class="detail-box">
+              <br>
+			  <h6 class="brand">
+                Brand: Lillywood
+              </h6>
+              <h6>
+                Product: Wardrobe
+              </h6>
+			  <h6 class="price">
+                Price: €1
+              </h6>
+            </div>
+          </a>
+        </div>
+      </div>
+      
   </section>
-
   <!-- end brand section -->
 
 
   <!-- info section -->
-  <section class="info_section layout_padding2">
+   <section class="info_section layout_padding2">
     <div class="container">
       <div class="info_logo">
         <h2>
@@ -202,7 +469,7 @@
                 <img src="/static/images/location-white.png" width="18px" alt="">
               </div>
               <p>
-                Address
+               National College of Ireland, Mayor Street Lower, International Financial Services Centre, Dublin 1
               </p>
             </div>
             <div>
@@ -210,7 +477,7 @@
                 <img src="/static/images/telephone-white.png" width="12px" alt="">
               </div>
               <p>
-                +01 1234567890
+                 +353 0000000000
               </p>
             </div>
             <div>
@@ -218,7 +485,7 @@
                 <img src="/static/images/envelope-white.png" width="18px" alt="">
               </div>
               <p>
-                demo@gmail.com
+				info@vintagegrace.com
               </p>
             </div>
           </div>
@@ -226,10 +493,10 @@
         <div class="col-md-3">
           <div class="info_info">
             <h5>
-              Informations
+               Important
             </h5>
             <p>
-              ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+              We believe in equality for everyone. Our shop is inclusive and open to all.
             </p>
           </div>
         </div>
@@ -241,41 +508,41 @@
             </h5>
             <div class="insta_container">
               <div>
-                <a href="">
+               
                   <div class="insta-box b-1">
                     <img src="/static/images/i-1.jpg" alt="">
                   </div>
-                </a>
-                <a href="">
+                
+               
                   <div class="insta-box b-2">
                     <img src="/static/images/i-2.jpg" alt="">
                   </div>
-                </a>
+               
               </div>
 
               <div>
-                <a href="">
+               
                   <div class="insta-box b-3">
                     <img src="/static/images/i-3.jpg" alt="">
                   </div>
-                </a>
-                <a href="">
+               
+               
                   <div class="insta-box b-4">
                     <img src="/static/images/i-4.jpg" alt="">
                   </div>
-                </a>
+              
               </div>
               <div>
-                <a href="">
+                
                   <div class="insta-box b-3">
                     <img src="/static/images/i-5.jpg" alt="">
                   </div>
-                </a>
-                <a href="">
+             
+                
                   <div class="insta-box b-4">
                     <img src="/static/images/i-6.jpg" alt="">
                   </div>
-                </a>
+               
               </div>
             </div>
           </div>
@@ -283,48 +550,23 @@
         <div class="col-md-3">
           <div class="info_form ">
             <h5>
-              Newsletter
+              Connect with us
             </h5>
-            <form action="">
-              <input type="email" placeholder="Enter your email">
-              <button>
-                Subscribe
-              </button>
-            </form>
             <div class="social_box">
-              <a href="">
+
                 <img src="/static/images/fb.png" alt="">
-              </a>
-              <a href="">
+
                 <img src="/static/images/twitter.png" alt="">
-              </a>
-              <a href="">
+
                 <img src="/static/images/linkedin.png" alt="">
-              </a>
-              <a href="">
+
                 <img src="/static/images/youtube.png" alt="">
-              </a>
+
             </div>
           </div>
-        </div>
       </div>
     </div>
   </section>
-
-  <!-- end info_section -->
-
-
-  <!-- footer section -->
-  <section class="container-fluid footer_section ">
-    <div class="container">
-      <p>
-        &copy; 2019 All Rights Reserved By
-        <a href="https://html.design/">Free Html Templates</a>
-      </p>
-    </div>
-  </section>
-  <!-- end  footer section -->
-
 
   <script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="/static/js/bootstrap.js"></script>
