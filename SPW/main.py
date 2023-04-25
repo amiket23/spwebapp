@@ -8,7 +8,7 @@ app = Flask(__name__)
 # Define connection uri for your database
 app.config["SQLALCHEMY_DATABASE_URI"] = "mssql+pyodbc://root:root@localhost:1433/users_db?driver=ODBC Driver 17 for SQL Server"
 app.config["SECRET_KEY"] = "abc"
-app.static_folder = "C:/Users/kumar/Documents/GitHub/spwebapp/SPW/static"
+app.static_folder = "./static"
 db = SQLAlchemy()
 
 login_manager = LoginManager()
