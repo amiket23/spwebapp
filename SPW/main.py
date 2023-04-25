@@ -19,7 +19,7 @@ login_manager.login_message_category = "info"
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    return redirect('/login.html')
+    return redirect('/login')
 
 class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -52,7 +52,7 @@ def register():
     return render_template("sign_up.html")
 
 
-@app.route("/login.html", methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         user = Users.query.filter_by(username=request.form.get("username")).first()
@@ -73,23 +73,23 @@ def logout():
 def home():
     return render_template("index.html")
 
-@app.route("/index.html")
+@app.route("/index")
 def index():
     return render_template("index.html")
 
 
-@app.route("/about.html")
+@app.route("/about")
 def about_us():
     return render_template("about.html")
 
 
-@app.route("/shop.html")
+@app.route("/shop")
 @login_required
 def shop():
     return render_template("shop.html")
 
 
-@app.route("/contact.html")
+@app.route("/contact")
 def contact():
     return render_template("contact.html")
 
