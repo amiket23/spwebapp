@@ -53,7 +53,7 @@ def register():
     return render_template("sign_up.html")
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login.html", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         user = Users.query.filter_by(username=request.form.get("username")).first()
@@ -73,10 +73,29 @@ def logout():
 def home():
     return render_template("index.html")
 
+@app.route("/index.html")
+def index():
+    return render_template("index.html")
+
 
 @app.route("/about.html")
 def about_us():
     return render_template("about.html")
+
+
+@app.route("/shop.html")
+def shop():
+    return render_template("shop.html")
+
+
+@app.route("/furniture.html")
+def furniture():
+    return render_template("furniture.html")
+
+
+@app.route("/contact.html")
+def contact():
+    return render_template("contact.html")
 
 
 if __name__ == "__main__":
