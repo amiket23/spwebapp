@@ -112,339 +112,36 @@
         </h2>
       </div>
       <div class="brand_container layout_padding2">
-        <div class="box">
-          <a href="">
-            <div class="new">
-              <h5>
-                New
-              </h5>
-            </div>
-            <div class="img-box">
-              <img src="/static/images/chair.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Touchwood
-              </h6>
-              <h6>
-                Product: Chair
-              </h6>
-			  <h6 class="price">
-                Price: €2
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/table.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Touchwood
-              </h6>
-              <h6>
-                Product: Table
-              </h6>
-			  <h6 class="price">
-                Price: €3
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/bed1.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Touchwood
-              </h6>
-              <h6>
-                Product: Bed
-              </h6>
-			  <h6 class="price">
-                Price: €1
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/wardrobe.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Touchwood
-              </h6>
-              <h6>
-                Product: Wardrobe
-              </h6>
-			  <h6 class="price">
-                Price: €1
-              </h6>
-            </div>
-          </a>
-        </div>
+			{% for product in products %}
+				<div class="box">
+				<a href="">
+				<div class="img-box">
+				<form method="post" action="/add">
+					<div class="product-image"><img src="/static/images/{{ product.image }}" alt=""></div>
+					<div class="detail-box">
+						<br>
+						<h6 class="brand">
+							Brand: {{ product.brand }}
+						</h6>
+						<h6>
+							Product: {{ product.name }}
+						</h6>
+						<h6 class="price">
+							Price: €{{ product.price }}
+						</h6>
+						<div class="cart-action">
+							<input type="hidden" name="code" value="{{ product.code }}"/>
+							<input type="text" class="product-quantity" name="quantity" value="1" size="2" />
+							<input type="submit" value="Add to Cart" class="btnAddAction" />
+						</div>
+					</div>
+				</form>
+			</div>
+			</a>
+			</div>
+			{% endfor %}
       </div>
-      
     </div>
-  
-    <div class="container">
-    
-      <div class="brand_container layout_padding2">
-        <div class="box">
-          <a href="">
-            
-            <div class="img-box">
-              <img src="/static/images/chair2.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Starwood
-              </h6>
-              <h6>
-                Product: Chair
-              </h6>
-			  <h6 class="price">
-                Price: €2
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/table2.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Starwood
-              </h6>
-              <h6>
-                Product: Table
-              </h6>
-			  <h6 class="price">
-                Price: €2
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/bed2.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Starwood
-              </h6>
-              <h6>
-                Product: Bed
-              </h6>
-			  <h6 class="price">
-                Price: €2
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/wardrobe2.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Starwood
-              </h6>
-              <h6>
-                Product: Wardrobe
-              </h6>
-			  <h6 class="price">
-                Price: €2
-              </h6>
-            </div>
-          </a>
-        </div>
-      </div>
-      
-    </div>
-	<div class="container">
-    
-      <div class="brand_container layout_padding2">
-        <div class="box">
-          <a href="">
-            
-            <div class="img-box">
-              <img src="/static/images/chair3.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Woodensolly
-              </h6>
-              <h6>
-                Product: Chair
-              </h6>
-			  <h6 class="price">
-                Price: €2
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/table3.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Woodensolly
-              </h6>
-              <h6>
-                Product: Table
-              </h6>
-			  <h6 class="price">
-                Price: €2
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/bed3.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Woodensolly
-              </h6>
-              <h6>
-                Product: Bed
-              </h6>
-			  <h6 class="price">
-                Price: €2
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/wardrobe3.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Woodensolly
-              </h6>
-              <h6>
-                Product: Wardrobe
-              </h6>
-			  <h6 class="price">
-                Price: €2
-              </h6>
-            </div>
-          </a>
-        </div>
-      </div>
-      
-    </div>
-	<div class="container">
-    
-      <div class="brand_container layout_padding2">
-        <div class="box">
-          <a href="">
-           
-            <div class="img-box">
-              <img src="/static/images/chair4.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Lillywood
-              </h6>
-              <h6>
-                Product: Chair
-              </h6>
-			  <h6 class="price">
-                Price: €2
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/table4.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Lillywood
-              </h6>
-              <h6>
-                Product: Table
-              </h6>
-			  <h6 class="price">
-                Price: €1
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/bed4.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Lillywood
-              </h6>
-              <h6>
-                Product: Bed
-              </h6>
-			  <h6 class="price">
-                Price: €3
-              </h6>
-            </div>
-          </a>
-        </div>
-        <div class="box">
-          <a href="">
-            <div class="img-box">
-              <img src="/static/images/wardrobe4.png" alt="">
-            </div>
-            <div class="detail-box">
-              <br>
-			  <h6 class="brand">
-                Brand: Lillywood
-              </h6>
-              <h6>
-                Product: Wardrobe
-              </h6>
-			  <h6 class="price">
-                Price: €1
-              </h6>
-            </div>
-          </a>
-        </div>
-      </div>
-      
   </section>
   <!-- end brand section -->
 
