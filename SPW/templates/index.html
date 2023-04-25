@@ -60,16 +60,13 @@
               </li>
             </ul>
            {% if current_user.is_authenticated %}
-              --
               <div class="user_option">
                 <a href="">
                 <img src="/static/images/user.png" alt="">
                 <a class="nav-link" href="/logout">logout</a>
                 </a>
               </div>
-              --
               {% else %}
-              --
               <div class="user_option">
               <a href="">
               <img src="/static/images/user.png" alt="">
@@ -77,7 +74,6 @@
               <a class="nav-link" href="sign_up.html">Register</a>
               </a>
               </div>
-               --
               {% endif %}
           </div>
           <div>
