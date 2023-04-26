@@ -134,24 +134,29 @@ def add_product_to_cart():
             all_total_quantity = 0
             session.modified = True
             if 'cart_item' in session:
-                if product.code in session['cart_item']:
-                    for key, value in session['cart_item'].items():
-                        if product.code == key:
-                            # session.modified = True
-                            # if session['cart_item'][key]['quantity'] is not None:
-                            #	session['cart_item'][key]['quantity'] = 0
-                            old_quantity = session['cart_item'][key]['quantity']
-                            total_quantity = old_quantity + _quantity
-                            session['cart_item'][key]['quantity'] = total_quantity
-                            session['cart_item'][key]['total_price'] = total_quantity * product.price
-                else:
-                    session['cart_item'] = array_merge(session['cart_item'], itemArray)
+                if session['cart_item'] is not None:
+                    if product.code in session['cart_item']:
+                        for key, value in session['cart_item'].items():
+                            if product.code == key:
+                                # session.modified = True
+                                # if session['cart_item'][key]['quantity'] is not None:
+                                #	session['cart_item'][key]['quantity'] = 0
+                                old_quantity = session['cart_item'][key]['quantity']
+                                total_quantity = old_quantity + _quantity
+                                session['cart_item'][key]['quantity'] = total_quantity
+                                session['cart_item'][key]['total_price'] = total_quantity * product.price
+                    else:
+                        session['cart_item'] = array_merge(session['cart_item'], itemArray)
 
-                for key, value in session['cart_item'].items():
-                    individual_quantity = int(session['cart_item'][key]['quantity'])
-                    individual_price = float(session['cart_item'][key]['total_price'])
-                    all_total_quantity = all_total_quantity + individual_quantity
-                    all_total_price = all_total_price + individual_price
+                    for key, value in session['cart_item'].items():
+                        individual_quantity = int(session['cart_item'][key]['quantity'])
+                        individual_price = float(session['cart_item'][key]['total_price'])
+                        all_total_quantity = all_total_quantity + individual_quantity
+                        all_total_price = all_total_price + individual_price
+                else:
+                    session['cart_item'] = itemArray
+                    all_total_quantity = all_total_quantity + _quantity
+                    all_total_price = all_total_price + _quantity * product.price
             else:
                 session['cart_item'] = itemArray
                 all_total_quantity = all_total_quantity + _quantity
@@ -181,7 +186,7 @@ def shop():
 @login_required
 def empty_cart():
     try:
-        session.clear()
+        session['cart_item'] = None
         return redirect(url_for('shop'))
     except Exception as e:
         print(e)
@@ -226,10 +231,13 @@ def cart_load():
         # execute db query to store form info with username date and order status/id
     total_items = []
     if 'cart_item' in session:
-        for item in (session['cart_item']).keys():
-            total_items.append(session['cart_item'][item])
-        total_items_count = len(total_items)
-        return render_template("checkout.html", total_items=total_items, total_items_count=total_items_count)
+        if session['cart_item'] is not None:
+            for item in (session['cart_item']).keys():
+                total_items.append(session['cart_item'][item])
+            total_items_count = len(total_items)
+            return render_template("checkout.html", total_items=total_items, total_items_count=total_items_count)
+        else:
+            return render_template("checkout.html")
     else:
         return render_template("checkout.html")
 
