@@ -51,7 +51,11 @@ def user_loader(user_id):
 
 @app.route('/admin', methods=["GET", "POST"])
 def admin():
-    return render_template("admin.html")
+    try:
+        product = Products.query.all()
+        return render_template("admin.html", products=product)
+    except Exception as e:
+        print(e)
 
 
 @app.route('/sign_up', methods=["GET", "POST"])
