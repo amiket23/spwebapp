@@ -68,7 +68,7 @@ def login():
             login_user(user)
             if user.accesslevel == "admin":
                 return redirect(url_for("admin"))
-            return redirect(url_for("home"))
+            return redirect(url_for('home'))
     return render_template("login.html")
 
 
@@ -94,7 +94,7 @@ def home():
 
 
 @app.route("/about")
-def about_us():
+def about():
     return render_template("about.html")
 
 
