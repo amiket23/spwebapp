@@ -49,7 +49,7 @@ def user_loader(user_id):
     return Users.query.get(user_id)
 
 
-@app.route('/register', methods=["GET", "POST"])
+@app.route('/sign_up', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         # user = Users(username=request.form.get("username"),password=request.form.get("password"))
@@ -66,6 +66,8 @@ def login():
         user = Users.query.filter_by(username=request.form.get("username")).first()
         if user.password == request.form.get("password") and user.isactive == "yes":
             login_user(user)
+            if user.accesslevel == "admin":
+                return redirect(url_for("admin"))
             return redirect(url_for("home"))
     return render_template("login.html")
 
@@ -211,6 +213,7 @@ def delete_product(code):
 @login_required
 def cart_load():
     if request.method == "POST":
+        print("")
         # execute db query to store form info with username date and order status/id
     return render_template("cart.html")
 
