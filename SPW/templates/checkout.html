@@ -118,10 +118,21 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                   <div>
                     <p class="mb-1">Shopping cart</p>
+					{% if total_items_count %}
                     <p class="mb-0">You have {{session.all_total_quantity}} items in your cart</p>
+					{% else %}
+					<p class="mb-0">You have no items in your cart</p>
+					{% endif %}
                   </div>
                 </div>
-				
+				{% if total_items_count %}
+				<div class="user_option">
+                <a href="">
+                <a class="nav-link" href="/empty">Empty Cart</a>
+                </a>
+              </div>
+				{% endif %}
+				{% if total_items_count %}
 				{% for item in total_items %}
                 <div class="card mb-3">
                   <div class="card-body">
@@ -150,6 +161,7 @@
                   </div>
                 </div>
 				{% endfor %}
+				{% endif %}
 
               </div>
               <div class="col-lg-5">
@@ -198,22 +210,38 @@
 
                     <div class="d-flex justify-content-between">
                       <p class="mb-2">Subtotal</p>
+					  {% if total_items_count %}
                       <p class="mb-2">€{{session.all_total_price}}</p>
+					  {% else %}
+					  <p class="mb-2">€0</p>
+					  {% endif %}
                     </div>
 
                     <div class="d-flex justify-content-between">
                       <p class="mb-2">Shipping</p>
-                      <p class="mb-2">€2.00</p>
+					  {% if total_items_count %}
+                      <p class="mb-2">€2</p>
+					  {% else %}
+					  <p class="mb-2">€0</p>
+					  {% endif %}
                     </div>
 
                     <div class="d-flex justify-content-between mb-4">
                       <p class="mb-2">Total(Incl. taxes)</p>
+					  {% if total_items_count %}
                       <p class="mb-2">€{{session.all_total_price + 2}}</p>
+					  {% else %}
+					  <p class="mb-2">€0</p>
+					  {% endif %}
                     </div>
 
                     <button type="button" class="btn btn-info btn-block btn-lg">
                       <div class="d-flex justify-content-between">
+						{% if total_items_count %} 
                         <span>€{{session.all_total_price + 2}}</span>
+						{% else %}
+						<span>€0</span>
+						{% endif %}
                         <span>Place Order<i class="fas fa-long-arrow-alt-right ms-2"></i></span>
                       </div>
                     </button>

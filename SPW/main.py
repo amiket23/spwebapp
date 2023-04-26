@@ -225,10 +225,13 @@ def cart_load():
         print("done")
         # execute db query to store form info with username date and order status/id
     total_items = []
-    for item in (session['cart_item']).keys():
-        total_items.append(session['cart_item'][item])
-    total_items_count = len(total_items)
-    return render_template("checkout.html", total_items=total_items, total_items_count=total_items_count)
+    if 'cart_item' in session:
+        for item in (session['cart_item']).keys():
+            total_items.append(session['cart_item'][item])
+        total_items_count = len(total_items)
+        return render_template("checkout.html", total_items=total_items, total_items_count=total_items_count)
+    else:
+        return render_template("checkout.html")
 
 
 def array_merge(first_array, second_array):
