@@ -73,7 +73,7 @@ def register():
 def login():
     if request.method == "POST":
         user = Users.query.filter_by(username=request.form.get("username")).first()
-        if user.password == request.form.get("password") and user.isactive == "yes":
+        if user.password == request.form.get("password") and user.isactive == "yes" and user.password != "":
             login_user(user)
             if user.accesslevel == "admin":
                 return redirect(url_for("admin"))
@@ -85,6 +85,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    session.clear()
     return redirect(url_for("home"))
 
 
