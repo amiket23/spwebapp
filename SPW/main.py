@@ -72,7 +72,7 @@ def login():
     return render_template("login.html")
 
 
-@app.route("/logout")
+@app.route("/logout", methods=["GET"])
 @login_required
 def logout():
     logout_user()
@@ -158,7 +158,7 @@ def add_product_to_cart():
 
 
 
-@app.route('/shop')
+@app.route('/shop', methods=["GET"])
 @login_required
 def shop():
     try:
@@ -209,7 +209,7 @@ def delete_product(code):
         print(e)
 
 
-@app.route('/cart')
+@app.route('/cart', methods=["GET", "POST"])
 @login_required
 def cart_load():
     if request.method == "POST":
