@@ -49,6 +49,11 @@ def user_loader(user_id):
     return Users.query.get(user_id)
 
 
+@app.route('/admin', methods=["GET", "POST"])
+def admin():
+    return render_template("admin.html")
+
+
 @app.route('/sign_up', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
