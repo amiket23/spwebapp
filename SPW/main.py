@@ -215,7 +215,7 @@ def cart_load():
     if request.method == "POST":
         print("")
         # execute db query to store form info with username date and order status/id
-    return render_template("cart.html")
+    return render_template("checkout.html")
 
 
 def array_merge(first_array, second_array):
