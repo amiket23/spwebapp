@@ -158,6 +158,10 @@ def contact():
 def faq():
     return render_template("faq.html")
 
+@app.route("/orders")
+def orders():
+    return render_template("orders.html")
+
 @app.route('/add', methods=['POST'])
 @login_required
 def add_product_to_cart():
