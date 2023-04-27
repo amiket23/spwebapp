@@ -145,7 +145,7 @@
 	<button onclick="delete_all_products()">Delete All Products</button>
 	<select name="product_list" style="margin-left:auto;margin-right:auto;border:1px solid black;border-collapse: collapse;text-align:center">
 	{% for product in products %}
-		<option value="{{ product.id }}">{{ product.name }}</option>
+		<option value="{{ product.name }}">{{ product.name }}</option>
 	{% endfor %}
 	</select>
 	<button onclick="delete_product()">Delete Selected Product</button>

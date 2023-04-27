@@ -283,9 +283,15 @@ def add_product():
     db.session.commit()
     return redirect(url_for("admin"))
 
+@app.route("/delete_product_data", methods=["Delete"])
+def delete_product_data():
+    return redirect(url_for('admin'))
 
-def delete_product():
-    product_name = request.form.get("")
+
+@app.route("/update_product", methods=["PUT"])
+def update_product():
+    #wrtie PUT CODE
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
