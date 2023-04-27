@@ -29,6 +29,7 @@ class Users(UserMixin, db.Model):
     accesslevel = db.Column(db.String(5), default="user", nullable=False)
     isactive = db.Column(db.String(3), default="yes", nullable=False)
 
+
 class Products(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
@@ -36,6 +37,18 @@ class Products(db.Model):
     code = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     image = db.Column(db.String(255), nullable=False)
+
+
+class Orders(db.Model):
+    order_id = db.Column(db.Integer, primary_key=True)
+    product = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    price = db.Column(db.String(255), nullable=False)
+    quantity = db.Column(db.String(255), nullable=False)
+    Address = db.Column(db.String(255), nullable=False)
+
 
 db.init_app(app)
 
@@ -61,7 +74,6 @@ def admin():
 @app.route('/sign_up', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        # user = Users(username=request.form.get("username"),password=request.form.get("password"))
         user = Users(username=request.form.get("username"), password=request.form.get("password"), email=request.form.get("email"))
         db.session.add(user)
         db.session.commit()
@@ -228,8 +240,19 @@ def delete_product(code):
 @login_required
 def cart_load():
     if request.method == "POST":
-        print("done")
-        # execute db query to store form info with username date and order status/id
+        total_items = []
+        if 'cart_item' in session:
+            if session['cart_item'] is not None:
+                for item in (session['cart_item']).keys():
+                    total_items.append(session['cart_item'][item])
+        for item in total_items:
+            user = Users.query.filter_by(id=session["_user_id"]).first()
+            Address = request.form.get("fullname") + ", " + request.form.get("address") + ", " + request.form.get("city") + ", " + request.form.get("eir")
+            order = Orders(product= item['code'], name=item["name"], username=user.username,
+                         email=user.email, price=item['price'], quantity=item['quantity'], Address=Address)
+            db.session.add(order)
+            db.session.commit()
+        return redirect(url_for('empty_cart'))
     total_items = []
     if 'cart_item' in session:
         if session['cart_item'] is not None:
