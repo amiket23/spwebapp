@@ -28,7 +28,13 @@
   <!-- responsive style -->
   <link href="/static/css/responsive.css" rel="stylesheet" />
 </head>
-
+{% with messages = get_flashed_messages() %}  
+         {% if messages %}  
+               {% for message in messages %}  
+                    <p style="margin-left:auto;margin-right:auto;border:1px solid red;border-collapse: collapse;text-align:center;color:red">{{ message }}</p>  
+               {% endfor %}  
+         {% endif %}  
+      {% endwith %}
 <body>
   <div class="hero_area">
     <!-- header section strats -->

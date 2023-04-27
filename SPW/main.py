@@ -100,12 +100,24 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        user = Users.query.filter_by(username=request.form.get("username")).first()
-        if user.password == request.form.get("password") and user.isactive == "yes" and user.password != "":
-            login_user(user)
-            if user.accesslevel == "admin":
-                return redirect(url_for("admin"))
-            return redirect(url_for('home'))
+        if request.form.get("username") or request.form.get("password"):
+            user = Users.query.filter_by(username=request.form.get("username")).first()
+            if user is None:
+                flash("Incorrect Username")
+                return redirect(url_for('login'))
+            if user.password == request.form.get("password"):
+                if user.isactive == "yes":
+                    login_user(user)
+                    flash("You are now logged in")
+                    if user.accesslevel == "admin":
+                        return redirect(url_for("admin"))
+                    return redirect(url_for('home'))
+                flash("Your account is disabled. Contact administrator")
+                return redirect(url_for('login'))
+            flash("Incorrect Password")
+            return redirect(url_for('login'))
+        flash("one of the required fields is blank")
+        return redirect(url_for("login"))
     return render_template("login.html")
 
 
@@ -114,6 +126,7 @@ def login():
 def logout():
     logout_user()
     session.clear()
+    flash("You have been logged out")
     return redirect(url_for("home"))
 
 
