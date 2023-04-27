@@ -12,21 +12,21 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>Digitf</title>
+  <title>Vintage Grace</title>
 
   <!-- slider stylesheet -->
   <link rel="stylesheet" type="text/css"
     href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
 
   <!-- bootstrap core css -->
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
 
   <!-- fonts style -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700&display=swap" rel="stylesheet">
   <!-- Custom styles for this template -->
-  <link href="css/style.css" rel="stylesheet" />
+  <link href="/static/css/style.css" rel="stylesheet" />
   <!-- responsive style -->
-  <link href="css/responsive.css" rel="stylesheet" />
+  <link href="/static/css/responsive.css" rel="stylesheet" />
 </head>
 
 <body class="sub_page">
@@ -35,8 +35,8 @@
     <header class="header_section">
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container">
-          <a class="navbar-brand" href="index.html">
-            <img src="images/logo.png" alt="" />
+          <a class="navbar-brand" href="index">
+            <img src="/static/images/logo.png" alt="" />
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,32 +46,38 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav  ">
               <li class="nav-item ">
-                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="about.html"> About</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="shop.html">Shop </a>
+                <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item active">
-                <a class="nav-link" href="furniture.html"> Furniture </a>
+                <a class="nav-link" href="about"> About</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="contact.html">Contact us</a>
+                <a class="nav-link" href="shop">Shop </a>
+              </li>
+             
+              <li class="nav-item">
+                <a class="nav-link" href="contact">Contact us</a>
+              </li>
+			  <li class="nav-item">
+                <a class="nav-link" href="faq">FAQs</a>
               </li>
             </ul>
-            <div class="user_option">
+            {% if current_user.is_authenticated %}
+              <div class="user_option">
+                <a href="">
+                <img src="/static/images/user.png" alt="">
+                <a class="nav-link" href="/logout">logout</a>
+                </a>
+              </div>
+              {% else %}
+              <div class="user_option">
               <a href="">
-                <img src="images/user.png" alt="">
-                <span>
-                  Login
-                </span>
+              <img src="/static/images/user.png" alt="">
+              <a class="nav-link" href="login">login</a>
+              <a class="nav-link" href="sign_up">Register</a>
               </a>
-              <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
-                <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-              </form>
-            </div>
+              </div>
+              {% endif %}
           </div>
           <div>
             <div class="custom_menu-btn ">
@@ -95,171 +101,49 @@
     <!-- end header section -->
   </div>
 
-  <!-- trending section -->
 
-  <section class="trending_section layout_padding">
-    <div id="accordion">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="detail-box">
-              <div class="heading_container">
-                <h2>
-                  Trending Categories
-                </h2>
-              </div>
-              <div class="tab_container">
-                <div class="t-link-box" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
-                  aria-controls="collapseOne">
-                  <div class="number">
-                    <h5>
-                      01
-                    </h5>
-                  </div>
-                  <hr>
-                  <div class="t-name">
-                    <h5>
-                      Chairs
-                    </h5>
-                  </div>
-                </div>
-                <div class="t-link-box collapsed" data-toggle="collapse" data-target="#collapseTwo"
-                  aria-expanded="false" aria-controls="collapseTwo">
-                  <div class="number">
-                    <h5>
-                      02
-                    </h5>
-                  </div>
-                  <hr>
-                  <div class="t-name">
-                    <h5>
-                      Tables
-                    </h5>
-                  </div>
-                </div>
-                <div class="t-link-box collapsed" data-toggle="collapse" data-target="#collapseThree"
-                  aria-expanded="false" aria-controls="collapseThree">
-                  <div class="number">
-                    <h5>
-                      03
-                    </h5>
-                  </div>
-                  <hr>
-                  <div class="t-name">
-                    <h5>
-                      Bads
-                    </h5>
-                  </div>
-                </div>
-                <div class="t-link-box collapsed" data-toggle="collapse" data-target="#collapseFour"
-                  aria-expanded="false" aria-controls="collapseFour">
-                  <div class="number">
-                    <h5>
-                      04
-                    </h5>
-                  </div>
-                  <hr>
-                  <div class="t-name">
-                    <h5>
-                      Furnitures
-                    </h5>
-                  </div>
-                </div>
-              </div>
+  <!-- about section -->
+
+  <section class="about_section layout_padding">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="detail-box">
+            <div class="heading_container">
+              <h2>
+                FAQs
+              </h2>
             </div>
+           <br>
+			<h4 class="heading_container">
+			How we process your orders?
+			</h4><br>	
+			Once we receive your orders through our website! Our team will contact you as soon as possible to discuss about product material, customization, type of product and delivery time!<br><br>
+		   <h4 class="heading_container">
+			Do you offer assembly services for furniture products?
+			</h4><br>
+				Yes! Vintage Grace offers an assembly service. When you buy a flat pack product, if you wish, you can select the assembly service for that product and add it to your order.
+				Let us make your life easier by assembling your brand new furniture for your home.<br><br> 
+			<h4 class="heading_container">
+			What is our return policy?
+			</h4><br>
+			If you have changed your mind about an online purchase, you have 14 days from the day you received your order to inform us of your intention to return your purchase.<br><br>
+			<h4 class="heading_container">
+			Do you offer a warranty for your furniture products?
+			</h4><br>
+			We’ve created comprehensive Vintage Grace guarantees for many of our products and have gathered them all here. Because, while we believe in the quality and durability of our products, at Vintage Grace we like to have your back. All Vinatge Grace appliances have a free 5-year guarantee
           </div>
-          <div class="col-md-6">
-            <div class="collapse show" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordion">
-              <div class="img_container ">
-                <div class="box b-1">
-                  <div class="img-box">
-                    <img src="images/t-1.jpg" alt="">
-                  </div>
-                  <div class="img-box">
-                    <img src="images/t-2.jpg" alt="">
-                  </div>
-                </div>
-                <div class="box b-2">
-                  <div class="img-box">
-                    <img src="images/t-3.jpg" alt="">
-                  </div>
-                  <div class="img-box">
-                    <img src="images/t-4.jpg" alt="">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="collapse" id="collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion">
-              <div class="img_container ">
-                <div class="box b-1">
-                  <div class="img-box">
-                    <img src="images/t-3.jpg" alt="">
-                  </div>
-                  <div class="img-box">
-                    <img src="images/t-4.jpg" alt="">
-                  </div>
-                </div>
-                <div class="box b-2">
-
-                  <div class="img-box">
-                    <img src="images/t-1.jpg" alt="">
-                  </div>
-                  <div class="img-box">
-                    <img src="images/t-2.jpg" alt="">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="collapse" id="collapseThree" aria-labelledby="headingThree" data-parent="#accordion">
-              <div class="img_container ">
-                <div class="box b-1">
-                  <div class="img-box">
-                    <img src="images/t-4.jpg" alt="">
-                  </div>
-                  <div class="img-box">
-                    <img src="images/t-1.jpg" alt="">
-                  </div>
-                </div>
-                <div class="box b-2">
-                  <div class="img-box">
-                    <img src="images/t-3.jpg" alt="">
-                  </div>
-                  <div class="img-box">
-                    <img src="images/t-2.jpg" alt="">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="collapse" id="collapseFour" aria-labelledby="headingfour" data-parent="#accordion">
-              <div class="img_container ">
-                <div class="box b-1">
-                  <div class="img-box">
-                    <img src="images/t-1.jpg" alt="">
-                  </div>
-
-                  <div class="img-box">
-                    <img src="images/t-4.jpg" alt="">
-                  </div>
-                </div>
-                <div class="box b-2">
-                  <div class="img-box">
-                    <img src="images/t-3.jpg" alt="">
-                  </div>
-                  <div class="img-box">
-                    <img src="images/t-2.jpg" alt="">
-                  </div>
-                </div>
-              </div>
-            </div>
-
+        </div>
+        <div class="col-md-6">
+          <div class="img-box">
+            <img src="/static/images/vintagegrace.png" alt="">
           </div>
         </div>
       </div>
     </div>
-
   </section>
 
-  <!-- end trending section -->
+  <!-- end about section -->
 
 
   <!-- info section -->
@@ -374,23 +258,12 @@
     </div>
   </section>
 
+
   <!-- end info_section -->
 
-
-  <!-- footer section -->
-  <section class="container-fluid footer_section ">
-    <div class="container">
-      <p>
-        &copy; 2019 All Rights Reserved By
-        <a href="https://html.design/">Free Html Templates</a>
-      </p>
-    </div>
-  </section>
-  <!-- end  footer section -->
-
-
-  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-  <script type="text/javascript" src="js/bootstrap.js"></script>
+ 
+  <script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="/static/js/bootstrap.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js">
   </script>
   <script type="text/javascript">
