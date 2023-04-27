@@ -99,13 +99,90 @@
   </div>
 
 
-  <!-- about section -->
+  <!-- admin panel section -->
   
+<head>
+	<title>Admin Panel</title>
+</head>
+<body>
+	<h1>Admin Panel</h1>
+	<h2>Add Product</h2>
+	<form action="/add_product" method="POST">
+		<label for="id">ID:</label>
+		<input type="text" name="id"><br><br>
+		<label for="name">Name:</label>
+		<input type="text" name="name"><br><br>
+		<label for="brand">Brand:</label>
+		<input type="text" name="brand"><br><br>
+		<label for="code">Code:</label>
+		<input type="text" name="code"><br><br>
+		<label for="price">Price:</label>
+		<input type="text" name="price"><br><br>
+		<label for="image">Image:</label>
+		<input type="text" name="image"><br><br>
+		<input type="submit" value="Add">
+	</form>
+	<hr>
+	<h2>View Products</h2>
+	<select name="product_list">
+	{% for product in products %}
+		<option value="{{ product.id }}">{{ product.name }}</option>
+	{% endfor %}
+	</select>
+	<button onclick="view_product()">View</button>
+	<hr>
+	<h2>Delete Products</h2>
+	<button onclick="delete_all_products()">Delete All Products</button>
+	<select name="product_list">
+	{% for product in products %}
+		<option value="{{ product.id }}">{{ product.name }}</option>
+	{% endfor %}
+	</select>
+	<button onclick="delete_product()">Delete Selected Product</button>
+	<hr>
+	<h2>Update Product</h2>
+	<form action="/update_product" method="POST">
+		<select name="product_list">
+		{% for product in products %}
+			<option value="{{ product.id }}">{{ product.name }}</option>
+		{% endfor %}
+		</select><br><br>
+		<label for="name">Name:</label>
+		<input type="text" name="name"><br><br>
+		<label for="brand">Brand:</label>
+		<input type="text" name="brand"><br><br>
+		<label for="code">Code:</label>
+		<input type="text" name="code"><br><br>
+		<label for="price">Price:</label>
+		<input type="text" name="price"><br><br>
+		<label for="image">Image:</label>
+		<input type="text" name="image"><br><br>
+		<input type="submit" value="Update">
+	</form>
+	<script>
+		function view_product() {
+			var product_id = document.getElementsByName("product_list")[0].value;
+			window.location.href = "/view_product/" + product_id;
+		}
+		
+		function delete_all_products() {
+			if (confirm("Are you sure you want to delete all products?")) {
+				window.location.href = "/delete_all_products";
+			}
+		}
+		
+		function delete_product() {
+			var product_id = document.getElementsByName("product_list")[1].value;
+			if (confirm("Are you sure you want to delete this product?")) {
+				window.location.href = "/delete_product/" + product_id;
+			}
+		}
+	</script>
+</body>
   
-  <!-- end about section -->
+  <!-- admin panel section -->
 
 
-  <!-- info section -->
 <!-- info section -->
   <section class="info_section layout_padding2">
     <div class="container">
