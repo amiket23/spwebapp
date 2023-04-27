@@ -111,6 +111,8 @@ def login():
                     flash("You are now logged in")
                     if user.accesslevel == "admin":
                         return redirect(url_for("admin"))
+                    if user.accesslevel == "fulfillment":
+                        return redirect(url_for('orders'))
                     return redirect(url_for('home'))
                 flash("Your account is disabled. Contact administrator")
                 return redirect(url_for('login'))
@@ -159,8 +161,18 @@ def faq():
     return render_template("faq.html")
 
 @app.route("/orders")
+@login_required
 def orders():
-    return render_template("orders.html")
+    user = Users.query.filter_by(id=session['_user_id']).first()
+    if user.accesslevel == 'fulfillment':
+        try:
+            total_orders = Orders.query.all()
+            return render_template("orders.html", orders=total_orders)
+        except Exception as e:
+            print(e)
+    else:
+        return redirect(url_for('index'))
+
 
 @app.route('/add', methods=['POST'])
 @login_required
@@ -274,7 +286,7 @@ def delete_product(code):
 @login_required
 def cart_load():
     user = Users.query.filter_by(id=session['_user_id']).first()
-    if user.accesslevel == 'admin':
+    if user.accesslevel == 'admin' or user.accesslevel == 'fulfillment':
         return redirect(url_for('index'))
     if request.method == "POST":
         total_items = []

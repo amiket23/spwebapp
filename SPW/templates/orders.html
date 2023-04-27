@@ -121,19 +121,25 @@
 	<h2 style="text-align:center">Current Orders Information</h2>
 	<table class="center" style="margin-left:auto;margin-right:auto;border:1px solid black;border-collapse: collapse;text-align:center" width="60%">
   <tr>
+	<th>Order_ID</th>
+	<th>Code</th>
     <th>Name</th>
-    <th>Brand</th> 
-    <th>Code</th>
+    <th>Username</th> 
+    <th>Email</th>
 	<th>Price</th>
-	<th>Image</th>
+	<th>Quantity</th>
+	<th>Address</th>
   </tr>
-{% for product in products %}
+{% for order in orders %}
   <tr>
-    <td>{{product.name}}</td>
-    <td>{{product.brand}}</td>
-    <td>{{product.code}}</td>
-	<td>€{{product.price}}</td>
-	<td>{{product.image}}</td>
+    <td>{{order.order_id}}</td>
+    <td>{{order.product}}</td>
+    <td>{{order.name}}</td>
+	<td>{{order.username}}</td>
+	<td>{{order.email}}</td>
+	<td>€{{order.price}}</td>
+    <td>{{order.quantity}}</td>
+	<td>{{order.Address}}</td>
 	</tr>
 {% endfor %}
 </table>
