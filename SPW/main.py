@@ -290,6 +290,7 @@ def delete_product_data():
 
 @app.route("/update_product", methods=["PUT"])
 def update_product():
+    print("")
     #wrtie PUT CODE
 
 
