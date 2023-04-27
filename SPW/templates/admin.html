@@ -106,18 +106,25 @@
 </head>
 <body>
 	<h1>Admin Panel</h1>
+	{% with messages = get_flashed_messages() %}  
+         {% if messages %}  
+               {% for message in messages %}  
+                    <p style="margin-left:auto;margin-right:auto;border:1px solid red;border-collapse: collapse;text-align:center;color:red">{{ message }}</p>  
+               {% endfor %}  
+         {% endif %}  
+      {% endwith %}
 	<h2 style="text-align:center">Add Product</h2>
 	<form action="/add_product" method="POST" style="margin-left:auto;margin-right:auto;border:1px solid black;border-collapse: collapse;text-align:center">
 		<label for="name">Name:</label>
-		<input type="text" name="name"><br><br>
+		<input type="text" name="name" placeholder="Required Field"><br><br>
 		<label for="brand">Brand:</label>
-		<input type="text" name="brand"><br><br>
+		<input type="text" name="brand" placeholder="Required Field"><br><br>
 		<label for="code">Code:</label>
-		<input type="text" name="code"><br><br>
+		<input type="text" name="code" placeholder="Required Field"><br><br>
 		<label for="price">Price:</label>
-		<input type="text" name="price"><br><br>
+		<input type="text" name="price" placeholder="Required Field"><br><br>
 		<label for="image">Image:</label>
-		<input type="text" name="image"><br><br>
+		<input type="text" name="image" placeholder="Required Field"><br><br>
 		<input type="submit" value="Add">
 	</form>
 	<hr>
@@ -142,27 +149,20 @@
 </table>
 	<hr>
 	<h2 style="text-align:center">Delete Products</h2>
-	<button onclick="delete_all_products()">Delete All Products</button>
-	<select name="product_list" style="margin-left:auto;margin-right:auto;border:1px solid black;border-collapse: collapse;text-align:center">
-	{% for product in products %}
-		<option value="{{ product.name }}">{{ product.name }}</option>
-	{% endfor %}
-	</select>
-	<button onclick="delete_product()">Delete Selected Product</button>
+	<form action="/delete_product_data" method="POST" style="margin-left:auto;margin-right:auto;border:1px solid black;border-collapse: collapse;text-align:center">
+		<label for="code">Code:</label>
+		<input type="text" name="code" placeholder="Required Field"><br><br>
+		<input type="submit" value="Delete">
+	</form>
 	<hr>
 	<h2 style="text-align:center">Update Product</h2>
 	<form action="/update_product" method="POST" style="margin-left:auto;margin-right:auto;border:1px solid black;border-collapse: collapse;text-align:center">
-		<select name="product_list">
-		{% for product in products %}
-			<option value="{{ product.name }}">{{ product.name }}</option>
-		{% endfor %}
-		</select><br><br>
+		<label for="code">Code:</label>
+		<input type="text" name="code" placeholder="Required Field"><br><br>
 		<label for="name">Name:</label>
 		<input type="text" name="name"><br><br>
 		<label for="brand">Brand:</label>
 		<input type="text" name="brand"><br><br>
-		<label for="code">Code:</label>
-		<input type="text" name="code"><br><br>
 		<label for="price">Price:</label>
 		<input type="text" name="price"><br><br>
 		<label for="image">Image:</label>

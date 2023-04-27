@@ -17,9 +17,11 @@ login_manager.login_view = "users.login"
 login_manager.login_message = "Please login to continue"
 login_manager.login_message_category = "info"
 
+
 @login_manager.unauthorized_handler
 def unauthorized():
     return redirect('/login')
+
 
 class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -63,21 +65,30 @@ def user_loader(user_id):
 
 
 @app.route('/admin', methods=["GET", "POST"])
+@login_required
 def admin():
-    try:
-        product = Products.query.all()
-        return render_template("admin.html", products=product)
-    except Exception as e:
-        print(e)
+    user = Users.query.filter_by(id=session['_user_id']).first()
+    if user.accesslevel == 'admin':
+        try:
+            product = Products.query.all()
+            return render_template("admin.html", products=product)
+        except Exception as e:
+            print(e)
+    else:
+        return redirect(url_for('index'))
 
 
 @app.route('/sign_up', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        user = Users(username=request.form.get("username"), password=request.form.get("password"), email=request.form.get("email"))
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for("login"))
+        if not request.form.get("username") or not request.form.get("password") or not request.form.get(
+                "email"):
+            user = Users(username=request.form.get("username"), password=request.form.get("password"), email=request.form.get("email"))
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for("login"))
+        flash("one of the required fields is blank")
+        return redirect(url_for("register"))
     return render_template("sign_up.html")
 
 
@@ -104,6 +115,7 @@ def logout():
 @app.route("/")
 def default_path():
     return render_template("index.html")
+
 
 @app.route("/index")
 def index():
@@ -133,12 +145,13 @@ def add_product_to_cart():
         _code = request.form['code']
         # validate the received values
         if _quantity and _code and request.method == 'POST':
+            product_value = ""
             product_list = Products.query.all()
             for product in product_list:
                 if product.code == _code:
                     product_value = product
                     break
-            product =product_value
+            product = product_value
             itemArray = {
                 product.code: {'name': product.name, 'code': product.code, 'quantity': _quantity, 'price': product.price,
                               'image': product.image, 'total_price': _quantity * product.price}}
@@ -151,9 +164,6 @@ def add_product_to_cart():
                     if product.code in session['cart_item']:
                         for key, value in session['cart_item'].items():
                             if product.code == key:
-                                # session.modified = True
-                                # if session['cart_item'][key]['quantity'] is not None:
-                                #	session['cart_item'][key]['quantity'] = 0
                                 old_quantity = session['cart_item'][key]['quantity']
                                 total_quantity = old_quantity + _quantity
                                 session['cart_item'][key]['quantity'] = total_quantity
@@ -182,7 +192,6 @@ def add_product_to_cart():
             return 'Error while adding item to cart'
     except Exception as e:
         print(e)
-
 
 
 @app.route('/shop', methods=["GET"])
@@ -239,6 +248,9 @@ def delete_product(code):
 @app.route('/cart', methods=["GET", "POST"])
 @login_required
 def cart_load():
+    user = Users.query.filter_by(id=session['_user_id']).first()
+    if user.accesslevel == 'admin':
+        return redirect(url_for('index'))
     if request.method == "POST":
         total_items = []
         if 'cart_item' in session:
@@ -277,21 +289,56 @@ def array_merge(first_array, second_array):
 
 
 @app.route('/add_product', methods=["POST"])
+@login_required
 def add_product():
+    if not request.form.get("name") or not request.form.get("brand") or not request.form.get(
+            "price") or not request.form.get("image"):
+        flash("One of the mandatory fields not supplied")
+        return redirect(url_for("admin"))
     product = Products(name=request.form.get("name"), brand=request.form.get("brand"), code=request.form.get("code"), price=request.form.get("price"), image=request.form.get("image"))
     db.session.add(product)
     db.session.commit()
+    flash("Data for product with code {} has been added".format(request.form.get("code")))
     return redirect(url_for("admin"))
 
-@app.route("/delete_product_data", methods=["Delete"])
+
+@app.route("/delete_product_data", methods=["POST"])
+@login_required
 def delete_product_data():
+    if request.form.get("code"):
+        product = Products.query.filter_by(code=request.form.get("code")).first()
+        if product is not None:
+            db.session.delete(product)
+            db.session.commit()
+            flash("Data for product with code {} has been deleted".format(request.form.get("code")))
+            return redirect(url_for('admin'))
+        flash("Ooops.....Incorrect Code Supplied")
+        return redirect(url_for('admin'))
+    flash("You need to supply the product's code value to be able to delete it")
     return redirect(url_for('admin'))
 
 
-@app.route("/update_product", methods=["PUT"])
+@app.route("/update_product", methods=["POST"])
+@login_required
 def update_product():
-    print("")
-    #wrtie PUT CODE
+    if request.form.get("code"):
+        if not request.form.get("name") and not request.form.get("brand") and not request.form.get("price") and not request.form.get("image"):
+            flash("You need to supply at least one value to update apart from code")
+            return redirect(url_for('admin'))
+        product = Products.query.filter_by(code=request.form.get("code")).first()
+        if request.form.get("name"):
+            product.name = request.form.get("name")
+        if request.form.get("brand"):
+            product.brand = request.form.get("brand")
+        if request.form.get("price"):
+            product.price = request.form.get("price")
+        if request.form.get("image"):
+            product.image = request.form.get("image")
+        db.session.commit()
+        flash("Data for product with code {} has been updated".format(request.form.get("code")))
+        return redirect(url_for('admin'))
+    flash("You need to supply the product's code value to be able to update information")
+    return redirect(url_for('admin'))
 
 
 if __name__ == "__main__":
