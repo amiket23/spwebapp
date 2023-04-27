@@ -81,12 +81,17 @@ def admin():
 @app.route('/sign_up', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        if not request.form.get("username") or not request.form.get("password") or not request.form.get(
+        if request.form.get("username") or request.form.get("password") or request.form.get(
                 "email"):
-            user = Users(username=request.form.get("username"), password=request.form.get("password"), email=request.form.get("email"))
-            db.session.add(user)
-            db.session.commit()
-            return redirect(url_for("login"))
+            try:
+                user = Users(username=request.form.get("username"), password=request.form.get("password"), email=request.form.get("email"))
+                db.session.add(user)
+                db.session.commit()
+                flash("User Created. You can now log in")
+                return redirect(url_for("login"))
+            except Exception as e:
+                flash("Exception Occured. Contact Administrator if this persists.")
+                return redirect(url_for("register"))
         flash("one of the required fields is blank")
         return redirect(url_for("register"))
     return render_template("sign_up.html")
