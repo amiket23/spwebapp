@@ -106,10 +106,8 @@
 </head>
 <body>
 	<h1>Admin Panel</h1>
-	<h2>Add Product</h2>
-	<form action="/add_product" method="POST">
-		<label for="id">ID:</label>
-		<input type="text" name="id"><br><br>
+	<h2 style="text-align:center">Add Product</h2>
+	<form action="/add_product" method="POST" style="margin-left:auto;margin-right:auto;border:1px solid black;border-collapse: collapse;text-align:center">
 		<label for="name">Name:</label>
 		<input type="text" name="name"><br><br>
 		<label for="brand">Brand:</label>
@@ -123,28 +121,40 @@
 		<input type="submit" value="Add">
 	</form>
 	<hr>
-	<h2>View Products</h2>
-	<select name="product_list">
-	{% for product in products %}
-		<option value="{{ product.id }}">{{ product.name }}</option>
-	{% endfor %}
-	</select>
-	<button onclick="view_product()">View</button>
+	<h2 style="text-align:center">Current Product Information</h2>
+	<table class="center" style="margin-left:auto;margin-right:auto;border:1px solid black;border-collapse: collapse;text-align:center" width="60%">
+  <tr>
+    <th>Name</th>
+    <th>Brand</th> 
+    <th>Code</th>
+	<th>Price</th>
+	<th>Image</th>
+  </tr>
+{% for product in products %}
+  <tr>
+    <td>{{product.name}}</td>
+    <td>{{product.brand}}</td>
+    <td>{{product.code}}</td>
+	<td>€{{product.price}}</td>
+	<td>{{product.image}}</td>
+	</tr>
+{% endfor %}
+</table>
 	<hr>
-	<h2>Delete Products</h2>
+	<h2 style="text-align:center">Delete Products</h2>
 	<button onclick="delete_all_products()">Delete All Products</button>
-	<select name="product_list">
+	<select name="product_list" style="margin-left:auto;margin-right:auto;border:1px solid black;border-collapse: collapse;text-align:center">
 	{% for product in products %}
 		<option value="{{ product.id }}">{{ product.name }}</option>
 	{% endfor %}
 	</select>
 	<button onclick="delete_product()">Delete Selected Product</button>
 	<hr>
-	<h2>Update Product</h2>
-	<form action="/update_product" method="POST">
+	<h2 style="text-align:center">Update Product</h2>
+	<form action="/update_product" method="POST" style="margin-left:auto;margin-right:auto;border:1px solid black;border-collapse: collapse;text-align:center">
 		<select name="product_list">
 		{% for product in products %}
-			<option value="{{ product.id }}">{{ product.name }}</option>
+			<option value="{{ product.name }}">{{ product.name }}</option>
 		{% endfor %}
 		</select><br><br>
 		<label for="name">Name:</label>

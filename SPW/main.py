@@ -276,5 +276,16 @@ def array_merge(first_array, second_array):
     return False
 
 
+@app.route('/add_product', methods=["POST"])
+def add_product():
+    product = Products(name=request.form.get("name"), brand=request.form.get("brand"), code=request.form.get("code"), price=request.form.get("price"), image=request.form.get("image"))
+    db.session.add(product)
+    db.session.commit()
+    return redirect(url_for("admin"))
+
+
+def delete_product():
+    product_name = request.form.get("")
+
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
