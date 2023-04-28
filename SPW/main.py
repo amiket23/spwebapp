@@ -1,12 +1,8 @@
 # Import required modules
-from flask import Flask, flash, redirect, render_template, request, session, url_for
-from flask_login import (
-    LoginManager,
-    UserMixin,
-    login_required,
-    login_user,
-    logout_user,
-)
+from flask import (Flask, flash, redirect, render_template, request, session,
+                   url_for)
+from flask_login import (LoginManager, UserMixin, login_required, login_user,
+                         logout_user)
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
