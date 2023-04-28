@@ -15,16 +15,20 @@ app.static_folder = "./static"
 app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE='Strict',
+    SESSION_COOKIE_SAMESITE="Strict",
 )
 db = SQLAlchemy()
 
+
 @app.after_request
 def add_security_header(response):
-    response.headers['Content-Security-Policy'] = "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';"
-    response.headers['Server']="Not Gonna Tell Ya"
-    response.headers['X-Content-Type-Options']="nosniff"
+    response.headers[
+        "Content-Security-Policy"
+    ] = "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';"
+    response.headers["Server"] = "Not Gonna Tell Ya"
+    response.headers["X-Content-Type-Options"] = "nosniff"
     return response
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -34,6 +38,7 @@ login_manager.login_message_category = "info"
 
 csrf = CSRFProtect()
 csrf.init_app(app)
+
 
 @login_manager.unauthorized_handler
 def unauthorized():
