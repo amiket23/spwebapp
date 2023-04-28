@@ -33,7 +33,6 @@ jobs:
         with:
           ignore: "F841"
           max-line-length: "120"
-          path: "/SPW/main.py"
           plugins: "flake8-bugbear==22.1.11 flake8-black"
 
   isort:
