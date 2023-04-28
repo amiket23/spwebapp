@@ -129,6 +129,7 @@
 		<label for="image">Image:</label>
 		<input type="text" name="image" placeholder="Required Field"><br><br>
 		<input type="submit" value="Add">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 	</form>
 	<hr>
 	<h2 style="text-align:center">Current Product Information</h2>
@@ -156,6 +157,7 @@
 		<label for="code">Code:</label>
 		<input type="text" name="code" placeholder="Required Field"><br><br>
 		<input type="submit" value="Delete">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 	</form>
 	<hr>
 	<h2 style="text-align:center">Update Product</h2>
@@ -171,6 +173,7 @@
 		<label for="image">Image:</label>
 		<input type="text" name="image"><br><br>
 		<input type="submit" value="Update">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 	</form>
 	<script>
 		function view_product() {

@@ -2,15 +2,29 @@
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import CSRFProtect
 
 app = Flask(__name__)
+
 # Define connection uri for your database
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "mssql+pyodbc://root:root@localhost:1433/users_db?driver=ODBC Driver 17 for SQL Server"
 app.config["SECRET_KEY"] = "abc"
 app.static_folder = "./static"
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Strict',
+)
 db = SQLAlchemy()
+
+@app.after_request
+def add_security_header(response):
+    response.headers['Content-Security-Policy'] = "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';"
+    response.headers['Server']="Not Gonna Tell Ya"
+    response.headers['X-Content-Type-Options']="nosniff"
+    return response
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -18,6 +32,8 @@ login_manager.login_view = "users.login"
 login_manager.login_message = "Please login to continue"
 login_manager.login_message_category = "info"
 
+csrf = CSRFProtect()
+csrf.init_app(app)
 
 @login_manager.unauthorized_handler
 def unauthorized():

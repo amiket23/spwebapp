@@ -192,6 +192,7 @@
 							<input type="text" id="typeText" class="form-control form-control-lg" size="17" placeholder="Enter Address" minlength="1" maxlength="255" name="address" />
 							<label class="form-label" for="typeText">Address</label>
 							</div>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 						<div class="row mb-4">
                         <div class="col-md-6">
                           <div class="form-outline form-white">
