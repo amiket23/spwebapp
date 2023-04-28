@@ -75,9 +75,9 @@ python
 9. Enable TCP/IP. Click on IP Addresses tab, navigate to 127.0.0.1 and enable it. Click ok.
 10. Click on SQL Server Services and restart the SQL Server (MSSQLSERVER) Service.
 11. Edit the .ini file and put in the credentials you created in SSMS. 
-12. Run
+12. Browse to /spwebapp/SPW/ and Run
 
-   ```main.py```
+   ```python -m main.py```
 
 13. Your online shop is up and running. Open a browser and navigate to 127.0.0.1:8000 and start browsing.
 
