@@ -1,8 +1,12 @@
 # Import required modules
-from flask import (Flask, flash, redirect, render_template, request, session,
-                   url_for)
-from flask_login import (LoginManager, UserMixin, current_user, login_required,
-                         login_user, logout_user)
+from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    login_required,
+    login_user,
+    logout_user,
+)
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -111,8 +115,7 @@ def register():
 def login():
     if request.method == "POST":
         if request.form.get("username") or request.form.get("password"):
-            user = Users.query.filter_by(
-                username=request.form.get("username")).first()
+            user = Users.query.filter_by(username=request.form.get("username")).first()
             if user is None:
                 flash("Incorrect Username")
                 return redirect(url_for("login"))
@@ -233,8 +236,7 @@ def add_product_to_cart():
                         )
 
                     for key, value in session["cart_item"].items():
-                        individual_quantity = int(
-                            session["cart_item"][key]["quantity"])
+                        individual_quantity = int(session["cart_item"][key]["quantity"])
                         individual_price = float(
                             session["cart_item"][key]["total_price"]
                         )
@@ -291,8 +293,7 @@ def delete_product(code):
                 session["cart_item"].pop(item[0], None)
                 if "cart_item" in session:
                     for key, value in session["cart_item"].items():
-                        individual_quantity = int(
-                            session["cart_item"][key]["quantity"])
+                        individual_quantity = int(session["cart_item"][key]["quantity"])
                         individual_price = float(
                             session["cart_item"][key]["total_price"]
                         )
@@ -395,8 +396,7 @@ def add_product():
     db.session.add(product)
     db.session.commit()
     flash(
-        "Data for product with code {} has been added".format(
-            request.form.get("code"))
+        "Data for product with code {} has been added".format(request.form.get("code"))
     )
     return redirect(url_for("admin"))
 
@@ -405,8 +405,7 @@ def add_product():
 @login_required
 def delete_product_data():
     if request.form.get("code"):
-        product = Products.query.filter_by(
-            code=request.form.get("code")).first()
+        product = Products.query.filter_by(code=request.form.get("code")).first()
         if product is not None:
             db.session.delete(product)
             db.session.commit()
@@ -434,8 +433,7 @@ def update_product():
         ):
             flash("You need to supply at least one value to update apart from code")
             return redirect(url_for("admin"))
-        product = Products.query.filter_by(
-            code=request.form.get("code")).first()
+        product = Products.query.filter_by(code=request.form.get("code")).first()
         if request.form.get("name"):
             product.name = request.form.get("name")
         if request.form.get("brand"):
