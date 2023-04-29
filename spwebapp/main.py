@@ -225,6 +225,8 @@ def register():
                 return redirect(url_for("register"))
         flash("one of the required fields is blank")
         return redirect(url_for("register"))
+    if session['_user_id']:
+        return redirect(url_for("index"))
     return render_template("sign_up.html")
 
 
