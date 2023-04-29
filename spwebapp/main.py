@@ -3,6 +3,7 @@ from flask import Flask, flash, redirect, render_template, request, session, url
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
@@ -18,6 +19,7 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='Strict',
 )
 db = SQLAlchemy()
+bcrypt = Bcrypt(app)
 
 @app.after_request
 def add_security_header(response):
@@ -106,7 +108,7 @@ def register():
             try:
                 user = Users(
                     username=request.form.get("username"),
-                    password=request.form.get("password"),
+                    password=bcrypt.generate_password_hash(request.form.get("password")).decode("utf-8"),
                     email=request.form.get("email"),
                 )
                 db.session.add(user)
@@ -129,7 +131,7 @@ def login():
             if user is None:
                 flash("Incorrect Username")
                 return redirect(url_for("login"))
-            if user.password == request.form.get("password"):
+            if bcrypt.check_password_hash(user.password, request.form.get("password")):
                 if user.isactive == "yes":
                     login_user(user)
                     flash("You are now logged in")
