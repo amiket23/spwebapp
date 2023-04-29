@@ -246,7 +246,7 @@ def login():
                     username=request.form.get("username")
                 ).first()
                 if user is None:
-                    flash("Incorrect Username")
+                    flash("Incorrect Username or Password")
                     return redirect(url_for("login"))
                 if bcrypt.check_password_hash(
                     user.password, request.form.get("password")
@@ -261,7 +261,7 @@ def login():
                         return redirect(url_for("home"))
                     flash("Your account is disabled. Contact administrator")
                     return redirect(url_for("login"))
-                flash("Incorrect Password")
+                flash("Incorrect Username or Password")
             except Exception as e:
                 print(
                     "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
