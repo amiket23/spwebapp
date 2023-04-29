@@ -1,23 +1,22 @@
 # Import required modules
+import configparser
+import re
+
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
-import re
-import configparser
 
-#Read config from ini file
+# Read config from ini file
 config = configparser.ConfigParser()
-config.read('./config.ini')
-#Create the application
+config.read("./config.ini")
+# Create the application
 app = Flask(__name__)
 
 # Define the configuration for your application
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = config['sql']['uri']
-app.config["SECRET_KEY"] = config['flask']['session_secret']
+app.config["SQLALCHEMY_DATABASE_URI"] = config["sql"]["uri"]
+app.config["SECRET_KEY"] = config["flask"]["session_secret"]
 app.static_folder = "./static"
 app.config.update(
     SESSION_COOKIE_SECURE=True,
@@ -76,6 +75,7 @@ class Users(UserMixin, db.Model):
     accesslevel - default value set to user.
     isactive - default value set to yes.
     """
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(13), unique=True, nullable=False)
     password = db.Column(db.String(12, 128), nullable=False)
@@ -87,13 +87,14 @@ class Users(UserMixin, db.Model):
 # This class defines the schema model for products table in the database
 class Products(db.Model):
     """
-        id - primary key
-        name - product name, not nullable.
-        brand - brand name for product, not nullable.
-        code - unique identifier for each product, not nullable.
-        price - price value for each product.
-        image - name of the image file for the product stored in /static/images.
-        """
+    id - primary key
+    name - product name, not nullable.
+    brand - brand name for product, not nullable.
+    code - unique identifier for each product, not nullable.
+    price - price value for each product.
+    image - name of the image file for the product stored in /static/images.
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
     brand = db.Column(db.String(128), nullable=False)
@@ -105,15 +106,16 @@ class Products(db.Model):
 # This class defines the schema model for orders table in the database
 class Orders(db.Model):
     """
-            order_id - primary key
-            product - product code, unique identifier for product, not nullable.
-            name - product name, not nullable.
-            username - username of the logged in user.
-            email - email of the logged in user.
-            price - price value for the product.
-            quantity - quantity ordered for the product.
-            Address - Delivery address for the specific order.
-            """
+    order_id - primary key
+    product - product code, unique identifier for product, not nullable.
+    name - product name, not nullable.
+    username - username of the logged in user.
+    email - email of the logged in user.
+    price - price value for the product.
+    quantity - quantity ordered for the product.
+    Address - Delivery address for the specific order.
+    """
+
     order_id = db.Column(db.Integer, primary_key=True)
     product = db.Column(db.String(128), nullable=False)
     name = db.Column(db.String(128), nullable=False)
@@ -153,14 +155,18 @@ def admin():
     try:
         user = Users.query.filter_by(id=session["_user_id"]).first()
     except Exception as e:
-        return print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        return print(
+            "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+        )
     if user.accesslevel:
         if user.accesslevel == "admin":
             try:
                 product = Products.query.all()
                 return render_template("admin.html", products=product)
             except Exception as e:
-                print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+                print(
+                    "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+                )
         else:
             return redirect(url_for("index"))
     else:
@@ -192,7 +198,9 @@ def register():
             elif len(request.form.get("password")) > 30:
                 flash("Email can be max 30 characters.")
                 return redirect(url_for("register"))
-            elif bool(re.match('^[a-zA-Z0-9]*$', request.form.get("username")) == False):
+            elif bool(
+                re.match("^[a-zA-Z0-9]*$", request.form.get("username")) == False
+            ):
                 flash("Username cannot contain any special characters")
                 return redirect(url_for("register"))
             elif len(request.form.get("password")) < 12:
@@ -211,7 +219,9 @@ def register():
                 flash("User Created. You can now log in")
                 return redirect(url_for("login"))
             except Exception as e:
-                flash("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+                flash(
+                    "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+                )
                 return redirect(url_for("register"))
         flash("one of the required fields is blank")
         return redirect(url_for("register"))
@@ -230,11 +240,15 @@ def login():
     if request.method == "POST":
         if request.form.get("username") or request.form.get("password"):
             try:
-                user = Users.query.filter_by(username=request.form.get("username")).first()
+                user = Users.query.filter_by(
+                    username=request.form.get("username")
+                ).first()
                 if user is None:
                     flash("Incorrect Username")
                     return redirect(url_for("login"))
-                if bcrypt.check_password_hash(user.password, request.form.get("password")):
+                if bcrypt.check_password_hash(
+                    user.password, request.form.get("password")
+                ):
                     if user.isactive == "yes":
                         login_user(user)
                         flash("You are now logged in")
@@ -247,7 +261,9 @@ def login():
                     return redirect(url_for("login"))
                 flash("Incorrect Password")
             except Exception as e:
-                print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+                print(
+                    "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+                )
             return redirect(url_for("login"))
         flash("one of the required fields is blank")
         return redirect(url_for("login"))
@@ -268,7 +284,9 @@ def logout():
         flash("You have been logged out")
         return redirect(url_for("home"))
     except Exception as e:
-        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        print(
+            "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+        )
 
 
 # Define the endpoint for default path
@@ -298,7 +316,7 @@ def home():
     return render_template("index.html")
 
 
-#Define the endpoint for about page
+# Define the endpoint for about page
 @app.route("/about")
 def about():
     """
@@ -343,7 +361,9 @@ def orders():
         else:
             return redirect(url_for("index"))
     except Exception as e:
-        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        print(
+            "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+        )
 
 
 # Define the endpoint for adding items to cart
@@ -418,7 +438,9 @@ def add_product_to_cart():
         else:
             return "Error while adding item to cart"
     except Exception as e:
-        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        print(
+            "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+        )
 
 
 # Define endpoint for shop page
@@ -433,7 +455,9 @@ def shop():
         product = Products.query.all()
         return render_template("shop.html", products=product)
     except Exception as e:
-        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        print(
+            "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+        )
 
 
 # Define the endpoint for emptying cart
@@ -448,7 +472,9 @@ def empty_cart():
         session["cart_item"] = None
         return redirect(url_for("shop"))
     except Exception as e:
-        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        print(
+            "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+        )
 
 
 # Define the endpoint for checkout/cart page
@@ -511,7 +537,9 @@ def cart_load():
         else:
             return render_template("checkout.html")
     except Exception as e:
-        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        print(
+            "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+        )
 
 
 # This function is used to merge individual item arrays into the existing cart array
@@ -558,11 +586,15 @@ def add_product():
         db.session.add(product)
         db.session.commit()
         flash(
-            "Data for product with code {} has been added".format(request.form.get("code"))
+            "Data for product with code {} has been added".format(
+                request.form.get("code")
+            )
         )
         return redirect(url_for("admin"))
     except Exception as e:
-        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        print(
+            "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+        )
 
 
 # Define the endpoint for deleting a product from the database from the admin portal
@@ -590,7 +622,9 @@ def delete_product_data():
         flash("You need to supply the product's code value to be able to delete it")
         return redirect(url_for("admin"))
     except Exception as e:
-        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        print(
+            "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+        )
 
 
 # Define the endpoint for updating a product into the database from the admin portal
@@ -632,7 +666,9 @@ def update_product():
         )
         return redirect(url_for("admin"))
     except Exception as e:
-        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        print(
+            "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
+        )
 
 
 """
@@ -646,4 +682,4 @@ Port flag can be used to specify different ports.
 Debug can be enabled by setting to True for debugging purposes.
 """
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc", port=int(config['flask']['port']), debug=False)
+    app.run(ssl_context="adhoc", port=int(config["flask"]["port"]), debug=False)
