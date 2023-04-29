@@ -4,13 +4,16 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
+import pyodbc
 
 app = Flask(__name__)
+cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost;DATABASE=vulnerable_users_db;UID=root;PWD=root')
+cursor = cnxn.cursor()
 
 # Define connection uri for your database
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "mssql+pyodbc://root:root@localhost:1433/users_db?driver=ODBC Driver 17 for SQL Server"
+] = "mssql+pyodbc://root:root@localhost:1433/vulnerable_users_db?driver=ODBC Driver 17 for SQL Server"
 app.config["SECRET_KEY"] = "abc"
 app.static_folder = "./static"
 app.config.update(
@@ -19,17 +22,6 @@ app.config.update(
     SESSION_COOKIE_SAMESITE="Strict",
 )
 db = SQLAlchemy()
-bcrypt = Bcrypt(app)
-
-
-@app.after_request
-def add_security_header(response):
-    response.headers[
-        "Content-Security-Policy-Report-Only"
-    ] = "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';"
-    response.headers["Server"] = "Not Gonna Tell Ya"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    return response
 
 
 login_manager = LoginManager()
@@ -37,9 +29,6 @@ login_manager.init_app(app)
 login_manager.login_view = "users.login"
 login_manager.login_message = "Please login to continue"
 login_manager.login_message_category = "info"
-
-csrf = CSRFProtect()
-csrf.init_app(app)
 
 
 @login_manager.unauthorized_handler
@@ -113,9 +102,7 @@ def register():
             try:
                 user = Users(
                     username=request.form.get("username"),
-                    password=bcrypt.generate_password_hash(
-                        request.form.get("password")
-                    ).decode("utf-8"),
+                    password=request.form.get("password"),
                     email=request.form.get("email"),
                 )
                 db.session.add(user)
@@ -134,17 +121,20 @@ def register():
 def login():
     if request.method == "POST":
         if request.form.get("username") or request.form.get("password"):
-            user = Users.query.filter_by(username=request.form.get("username")).first()
+            query = "SELECT * from dbo.users WHERE username = '" + request.form.get(
+                "username") + "' AND password = '" + request.form.get("password") + "'"
+            user = cursor.execute(query).fetchone()
             if user is None:
                 flash("Incorrect Username or password")
                 return redirect(url_for("login"))
-            if bcrypt.check_password_hash(user.password, request.form.get("password")):
-                if user.isactive == "yes":
-                    login_user(user)
+            else:
+                if user[5] == "yes":
+                    session["is_active"] = "Yes"
+                    session["_user_id"] = user[0]
                     flash("You are now logged in")
-                    if user.accesslevel == "admin":
+                    if user[4] == "admin":
                         return redirect(url_for("admin"))
-                    if user.accesslevel == "fulfillment":
+                    if user[4] == "fulfillment":
                         return redirect(url_for("orders"))
                     return redirect(url_for("home"))
                 flash("Your account is disabled. Contact administrator")
@@ -475,4 +465,4 @@ def update_product():
 
 
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc", port=443, debug=False)
+    app.run(port=8000, debug=True)
