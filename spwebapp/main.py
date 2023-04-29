@@ -1,9 +1,9 @@
 # Import required modules
 from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
-from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
@@ -16,17 +16,21 @@ app.static_folder = "./static"
 app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE='Strict',
+    SESSION_COOKIE_SAMESITE="Strict",
 )
 db = SQLAlchemy()
 bcrypt = Bcrypt(app)
 
+
 @app.after_request
 def add_security_header(response):
-    response.headers['Content-Security-Policy-Report-Only'] = "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';"
-    response.headers['Server']="Not Gonna Tell Ya"
-    response.headers['X-Content-Type-Options']="nosniff"
+    response.headers[
+        "Content-Security-Policy-Report-Only"
+    ] = "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';"
+    response.headers["Server"] = "Not Gonna Tell Ya"
+    response.headers["X-Content-Type-Options"] = "nosniff"
     return response
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -36,6 +40,7 @@ login_manager.login_message_category = "info"
 
 csrf = CSRFProtect()
 csrf.init_app(app)
+
 
 @login_manager.unauthorized_handler
 def unauthorized():
@@ -108,7 +113,9 @@ def register():
             try:
                 user = Users(
                     username=request.form.get("username"),
-                    password=bcrypt.generate_password_hash(request.form.get("password")).decode("utf-8"),
+                    password=bcrypt.generate_password_hash(
+                        request.form.get("password")
+                    ).decode("utf-8"),
                     email=request.form.get("email"),
                 )
                 db.session.add(user)
@@ -468,4 +475,4 @@ def update_product():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    app.run(ssl_context="adhoc", port=443, debug=False)
