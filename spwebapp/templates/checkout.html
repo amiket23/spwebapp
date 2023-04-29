@@ -48,20 +48,20 @@
               <li class="nav-item ">
                 <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item active">
                 <a class="nav-link" href="about"> About</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="shop">Shop </a>
               </li>
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a class="nav-link" href="contact">Contact us</a>
               </li>
 			  <li class="nav-item">
                 <a class="nav-link" href="faq">FAQs</a>
               </li>
             </ul>
-            {% if current_user.is_authenticated %}
+             {% if current_user.is_authenticated %}
               <div class="user_option">
                 <a href="">
                 <img src="/static/images/user.png" alt="">
@@ -101,47 +101,170 @@
   </div>
 
 
+  <!-- about section -->
 
-  <!-- contact section -->
+  <section class="h-100 h-custom" style="background-color: #eee;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col">
+        <div class="card">
+          <div class="card-body p-4">
 
-  <section class="contact_section layout_padding">
-    <div class="container ">
-      <div class="heading_container">
-        <h2 class="">
-          Contact Us
-        </h2>
-      </div>
+            <div class="row">
 
-    </div>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <form action="">
-            <div>
-              Address: National College of Ireland, Mayor Street Lower, International Financial Services Centre, Dublin 1
-            </div><br><br>
-            <div>
-             Contact No: +353 0000000000
-            </div><br><br>
-            <div>
-              Email: enquiry@vintagegrace.com
+              <div class="col-lg-7">
+                <h5 class="mb-3"><a href="/shop" class="text-body"><i
+                      class="fas fa-long-arrow-alt-left me-2"></i>Continue shopping</a></h5>
+                <hr>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <div>
+                    <p class="mb-1">Shopping cart</p>
+					{% if total_items_count %}
+                    <p class="mb-0">You have {{session.all_total_quantity}} items in your cart</p>
+					{% else %}
+					<p class="mb-0">You have no items in your cart</p>
+					{% endif %}
+                  </div>
+                </div>
+				{% if total_items_count %}
+				<div class="user_option">
+                <a href="">
+                <a class="nav-link" href="/empty">Empty Cart</a>
+                </a>
+              </div>
+				{% endif %}
+				{% if total_items_count %}
+				{% for item in total_items %}
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div class="d-flex flex-row align-items-center">
+                        <div>
+                          <img
+                            src="/static/images/{{item.image}}"
+                            class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">
+                        </div>
+                        <div class="ms-3">
+                          <h5>{{item.name}}</h5>
+                          <p class="small mb-0">{{item.brand}}</p>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row align-items-center">
+                        <div style="width: 50px;">
+                          <h5 class="fw-normal mb-0">{{item.quantity}}</h5>
+                        </div>
+                        <div style="width: 80px;">
+                          <h5 class="mb-0">€{{item.price}}</h5>
+                        </div>
+                        <a href="#!" style="color: #cecece;"><i class="fas fa-trash-alt"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+				{% endfor %}
+				{% endif %}
+
+              </div>
+              <div class="col-lg-5">
+	
+                <div class="card bg-success text-white rounded-3">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                      <h5 class="mb-0">Delivery Information</h5>
+                    </div>
+
+                    <p class="small mb-2">Address Details</p>
+                    <a href="#" type="submit" class="text-white"><i
+                        class="fab fa-cc-mastercard fa-2x me-2"></i></a>
+                    <a href="#" type="submit" class="text-white"><i
+                        class="fab fa-cc-visa fa-2x me-2"></i></a>
+                    <a href="#" type="submit" class="text-white"><i
+                        class="fab fa-cc-amex fa-2x me-2"></i></a>
+                    <a href="#" type="submit" class="text-white"><i class="fab fa-cc-paypal fa-2x"></i></a>
+
+                        <form action="#" method="post">
+							<div  class="form-outline form-white mb-4">
+							<input type="text" id="typeName" class="form-control form-control-lg" size="17" placeholder="Enter your Name ..." name="fullname" />
+							<label class="form-label" for="typeName">Full Name</label>
+							</div>
+							<div class="form-outline form-white mb-4">
+							<input type="text" id="typeText" class="form-control form-control-lg" size="17" placeholder="Enter Address" minlength="1" maxlength="255" name="address" />
+							<label class="form-label" for="typeText">Address</label>
+							</div>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+						<div class="row mb-4">
+                        <div class="col-md-6">
+                          <div class="form-outline form-white">
+                            <input type="text" id="typeExp" class="form-control form-control-lg"
+                              placeholder="Enter City" size="7" id="exp" minlength="1" maxlength="255" name="city" />
+                            <label class="form-label" for="typeExp">City</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-outline form-white">
+                            <input type="text" id="typeText" class="form-control form-control-lg"
+                              placeholder="Eir" size="1" minlength="7" maxlength="8" name="eir" />
+                            <label class="form-label" for="typeText">Eir Code</label>
+                          </div>
+						  </div>
+						  </div>
+							<hr class="my-4">
+
+                    <div class="d-flex justify-content-between">
+                      <p class="mb-2">Subtotal</p>
+					  {% if total_items_count %}
+                      <p class="mb-2">€{{session.all_total_price}}</p>
+					  {% else %}
+					  <p class="mb-2">€0</p>
+					  {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                      <p class="mb-2">Shipping</p>
+					  {% if total_items_count %}
+                      <p class="mb-2">€2</p>
+					  {% else %}
+					  <p class="mb-2">€0</p>
+					  {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-4">
+                      <p class="mb-2">Total(Incl. taxes)</p>
+					  {% if total_items_count %}
+                      <p class="mb-2">€{{session.all_total_price + 2}}</p>
+					  {% else %}
+					  <p class="mb-2">€0</p>
+					  {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-info btn-block btn-lg">
+                      <div class="d-flex justify-content-between">
+						{% if total_items_count %} 
+                        <span>€{{session.all_total_price + 2}}</span>
+						{% else %}
+						<span>€0</span>
+						{% endif %}
+                        <span>Place Order<i class="fas fa-long-arrow-alt-right ms-2"></i></span>
+                      </div>
+                    </button>
+							</div>
+						</form>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
-            <br><br>
-          </form>
-        </div>
-        <div class="col-md-6">
-          <div class="map_container">
-            <div class="map-responsive">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2381.6894309198137!2d-6.244937384161467!3d53.34881542997952!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48670e8cd86e97e7%3A0x6d51b774ee7fa935!2sNational%20College%20of%20Ireland!5e0!3m2!1sen!2sie!4v1682447076265!5m2!1sen!2sie" width="600" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
+
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- end contact section -->
-
+  <!-- end about section -->
 
 
   <!-- info section -->
@@ -257,9 +380,7 @@
   </section>
 
 
-
   <!-- end info_section -->
-
 
 
   <script type="text/javascript" src="/static/js/jquery-3.5.0.min.js"></script>

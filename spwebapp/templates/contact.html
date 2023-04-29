@@ -51,32 +51,29 @@
               <li class="nav-item">
                 <a class="nav-link" href="about"> About</a>
               </li>
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a class="nav-link" href="shop">Shop </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item active">
                 <a class="nav-link" href="contact">Contact us</a>
               </li>
 			  <li class="nav-item">
                 <a class="nav-link" href="faq">FAQs</a>
               </li>
             </ul>
-			<div class="user_option">				  
-				  <a class="nav-link" href="/cart">Checkout</a>
-              </div>
-             {% if current_user.is_authenticated %}
-				  <div class="user_option">
-				  <a href="">
-				  <img src="/static/images/user.png" alt="">
-				  <a class="nav-link" href="/logout">logout</a>
+            {% if current_user.is_authenticated %}
+              <div class="user_option">
+                <a href="">
+                <img src="/static/images/user.png" alt="">
+                <a class="nav-link" href="/logout">logout</a>
                 </a>
               </div>
               {% else %}
               <div class="user_option">
-				  <a href="">
-				  <img src="/static/images/user.png" alt="">
-				  <a class="nav-link" href="login">login</a>
-				  <a class="nav-link" href="sign_up">Register</a>
+              <a href="">
+              <img src="/static/images/user.png" alt="">
+              <a class="nav-link" href="login">login</a>
+              <a class="nav-link" href="sign_up">Register</a>
               </a>
               </div>
               {% endif %}
@@ -105,48 +102,47 @@
 
 
 
-  <!-- brand section -->
+  <!-- contact section -->
 
-  <section class="brand_section layout_padding">
-    <div class="container">
+  <section class="contact_section layout_padding">
+    <div class="container ">
       <div class="heading_container">
-        <h2>
-          Featured Brands
+        <h2 class="">
+          Contact Us
         </h2>
       </div>
-      <div class="brand_container layout_padding2">
-			{% for product in products %}
-				<div class="box">
-				<a href="">
-				<div class="img-box">
-				<form method="post" action="/add">
-					<div class="product-image"><img src="/static/images/{{ product.image }}" alt=""></div>
-					<div class="detail-box">
-						<br>
-						<h6 class="brand">
-							Brand: {{ product.brand }}
-						</h6>
-						<h6>
-							Product: {{ product.name }}
-						</h6>
-						<h6 class="price">
-							Price: €{{ product.price }}
-						</h6>
-						<div class="cart-action">
-							<input type="hidden" name="code" value="{{ product.code }}"/>
-							<input type="text" class="product-quantity" name="quantity" value="1" size="2" />
-							<input type="submit" value="Add to Cart" class="btnAddAction" />
-						</div>
-					</div>
-				</form>
-			</div>
-			</a>
-			</div>
-			{% endfor %}
+
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <form action="">
+            <div>
+              Address: National College of Ireland, Mayor Street Lower, International Financial Services Centre, Dublin 1
+            </div><br><br>
+            <div>
+             Contact No: +353 0000000000
+            </div><br><br>
+            <div>
+              Email: enquiry@vintagegrace.com
+            </div>
+            <br><br>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          </form>
+        </div>
+        <div class="col-md-6">
+          <div class="map_container">
+            <div class="map-responsive">
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2381.6894309198137!2d-6.244937384161467!3d53.34881542997952!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48670e8cd86e97e7%3A0x6d51b774ee7fa935!2sNational%20College%20of%20Ireland!5e0!3m2!1sen!2sie!4v1682447076265!5m2!1sen!2sie" width="600" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
-  <!-- end brand section -->
+
+  <!-- end contact section -->
+
 
 
   <!-- info section -->
@@ -260,6 +256,12 @@
       </div>
     </div>
   </section>
+
+
+
+  <!-- end info_section -->
+
+
 
   <script type="text/javascript" src="/static/js/jquery-3.5.0.min.js"></script>
   <script type="text/javascript" src="/static/js/bootstrap.js"></script>
