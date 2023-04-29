@@ -195,7 +195,7 @@ def register():
             elif len(request.form.get("password")) > 128:
                 flash("Password can be max 128 characters.")
                 return redirect(url_for("register"))
-            elif len(request.form.get("password")) > 30:
+            elif len(request.form.get("email")) > 30:
                 flash("Email can be max 30 characters.")
                 return redirect(url_for("register"))
             elif bool(
