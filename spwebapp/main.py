@@ -136,7 +136,7 @@ def login():
         if request.form.get("username") or request.form.get("password"):
             user = Users.query.filter_by(username=request.form.get("username")).first()
             if user is None:
-                flash("Incorrect Username")
+                flash("Incorrect Username or password")
                 return redirect(url_for("login"))
             if bcrypt.check_password_hash(user.password, request.form.get("password")):
                 if user.isactive == "yes":
@@ -149,7 +149,7 @@ def login():
                     return redirect(url_for("home"))
                 flash("Your account is disabled. Contact administrator")
                 return redirect(url_for("login"))
-            flash("Incorrect Password")
+            flash("Incorrect Username or password")
             return redirect(url_for("login"))
         flash("one of the required fields is blank")
         return redirect(url_for("login"))
