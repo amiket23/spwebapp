@@ -120,14 +120,14 @@
         <div class="col-md-6">
           <form action="#" method="post">
             <div>
-              <input type="username" placeholder="username" name="username" />
+              <input type="username" placeholder="username" name="username"  maxlength="13"  required="true"/>
             </div>
             <div>
-              <input type="password" placeholder="password" name="password" />
+              <input type="password" placeholder="password" name="password" minlength="12" maxlength="128" required="true"/>
             </div>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="d-flex ">
-              <button>
+              <button>s
                 Login
               </button>
             </div>
