@@ -5,9 +5,10 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 
+#Create the application
 app = Flask(__name__)
 
-# Define connection uri for your database
+# Define the configuration for your application
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "mssql+pyodbc://root:root@localhost:1433/users_db?driver=ODBC Driver 17 for SQL Server"
@@ -18,12 +19,19 @@ app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Strict",
 )
+# Initialize database and cryptography
 db = SQLAlchemy()
 bcrypt = Bcrypt(app)
 
 
+# Define Security header
 @app.after_request
 def add_security_header(response):
+    """
+    Function to define security headers
+    :param response:
+    :return:
+    """
     response.headers[
         "Content-Security-Policy-Report-Only"
     ] = "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';"
@@ -32,22 +40,37 @@ def add_security_header(response):
     return response
 
 
+# Define login manager/handler
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "users.login"
 login_manager.login_message = "Please login to continue"
 login_manager.login_message_category = "info"
 
+# Initialize protection against cross site request forgery
 csrf = CSRFProtect()
 csrf.init_app(app)
 
 
+# This function handles unauthorized login attempts
 @login_manager.unauthorized_handler
 def unauthorized():
+    """
+    :return: return to login page if user is unauthorized
+    """
     return redirect("/login")
 
 
+# This class defines the schema model for users table in the database
 class Users(UserMixin, db.Model):
+    """
+    id - primary key
+    username - unique identifier for login, not nullable.
+    password - Secret key for each user, not nullable. Stored after hashing.
+    email - unique for each user, not nullable.
+    accesslevel - default value set to user.
+    isactive - default value set to yes.
+    """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
@@ -56,7 +79,16 @@ class Users(UserMixin, db.Model):
     isactive = db.Column(db.String(3), default="yes", nullable=False)
 
 
+# This class defines the schema model for products table in the database
 class Products(db.Model):
+    """
+        id - primary key
+        name - product name, not nullable.
+        brand - brand name for product, not nullable.
+        code - unique identifier for each product, not nullable.
+        price - price value for each product.
+        image - name of the image file for the product stored in /static/images.
+        """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     brand = db.Column(db.String(255), nullable=False)
@@ -65,7 +97,18 @@ class Products(db.Model):
     image = db.Column(db.String(255), nullable=False)
 
 
+# This class defines the schema model for orders table in the database
 class Orders(db.Model):
+    """
+            order_id - primary key
+            product - product code, unique identifier for product, not nullable.
+            name - product name, not nullable.
+            username - username of the logged in user.
+            email - email of the logged in user.
+            price - price value for the product.
+            quantity - quantity ordered for the product.
+            Address - Delivery address for the specific order.
+            """
     order_id = db.Column(db.Integer, primary_key=True)
     product = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable=False)
@@ -76,21 +119,29 @@ class Orders(db.Model):
     Address = db.Column(db.String(255), nullable=False)
 
 
+# Add the initialized db to the application context
 db.init_app(app)
 
 
+# This function creates database values if they do not already exist.
 with app.app_context():
     db.create_all()
 
 
+# Function to load the user in login manager
 @login_manager.user_loader
 def user_loader(user_id):
     return Users.query.get(user_id)
 
 
+# Define the endpoint for admin portal
 @app.route("/admin", methods=["GET", "POST"])
 @login_required
 def admin():
+    """
+    Function to check user's access level for admin capabilities.
+    :return: return to admin portal if user's access level is admin or redirect to index
+    """
     user = Users.query.filter_by(id=session["_user_id"]).first()
     if user.accesslevel == "admin":
         try:
@@ -102,8 +153,16 @@ def admin():
         return redirect(url_for("index"))
 
 
+# Define the endpoint for registration portal
 @app.route("/sign_up", methods=["GET", "POST"])
 def register():
+    """
+    GET - renders registration page.
+    POST - Function to register user in the database. It checks if username, password and email
+    are not null and creates user in db.
+    :return: returns to login page after user creation or to registration page if request is GET or
+    returns to sign up page and displays error message in case of issues.
+    """
     if request.method == "POST":
         if (
             request.form.get("username")
@@ -130,8 +189,15 @@ def register():
     return render_template("sign_up.html")
 
 
+# Define the endpoint for login portal
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    GET - renders login page.
+    POST - Checks user's login credentials and logs them in if they match stored hash values from database.
+    :return: returns user to home page with successful login message if creds match or
+    returns user to login page with error message if creds do not match.
+    """
     if request.method == "POST":
         if request.form.get("username") or request.form.get("password"):
             user = Users.query.filter_by(username=request.form.get("username")).first()
@@ -156,48 +222,84 @@ def login():
     return render_template("login.html")
 
 
+# Define the endpoint for logout portal
 @app.route("/logout", methods=["GET"])
 @login_required
 def logout():
+    """
+    function to logout currently logged in user.
+    :return: returns to home page with user logged out message
+    """
     logout_user()
     session.clear()
     flash("You have been logged out")
     return redirect(url_for("home"))
 
 
+# Define the endpoint for default path
 @app.route("/")
 def default_path():
+    """
+    :return: returns to home page
+    """
     return render_template("index.html")
 
 
+# Define the endpoint for the index page
 @app.route("/index")
 def index():
+    """
+    :return: returns to home page
+    """
     return render_template("index.html")
 
 
+# Define the endpoint for home page
 @app.route("/home")
 def home():
+    """
+    :return: returns to home page
+    """
     return render_template("index.html")
 
 
+#Define the endpoint for about page
 @app.route("/about")
 def about():
+    """
+    :return: returns to about page
+    """
     return render_template("about.html")
 
 
+# Define the endpoint for contact page
 @app.route("/contact")
 def contact():
+    """
+    :return: returns to contact page
+    """
     return render_template("contact.html")
 
 
+# Define the endpoint for frequently asked questions page
 @app.route("/faq")
 def faq():
+    """
+    :return: returns to page faq page
+    """
     return render_template("faq.html")
 
 
+# Define the endpoint for orders management portal
 @app.route("/orders")
 @login_required
 def orders():
+    """
+    function checks if currently logged in user has the role 'fulfillment'
+    and also loads the orders info into the page.
+    :return: returns to order management page if user has the right role
+    or redirects to index if user does not have fulfillment role.
+    """
     user = Users.query.filter_by(id=session["_user_id"]).first()
     if user.accesslevel == "fulfillment":
         try:
@@ -209,9 +311,14 @@ def orders():
         return redirect(url_for("index"))
 
 
+# Define the endpoint for adding items to cart
 @app.route("/add", methods=["POST"])
 @login_required
 def add_product_to_cart():
+    """
+    function builds a cart array from the chosen product and adds it to the user's cart
+    :return: returns updated cart to the user
+    """
     try:
         _quantity = int(request.form["quantity"])
         _code = request.form["code"]
@@ -279,9 +386,14 @@ def add_product_to_cart():
         print(e)
 
 
+# Define endpoint for shop page
 @app.route("/shop", methods=["GET"])
 @login_required
 def shop():
+    """
+    function loads product values into the shop page. Login is required.
+    :return: returns logged in user to the shop page
+    """
     try:
         product = Products.query.all()
         return render_template("shop.html", products=product)
@@ -289,9 +401,14 @@ def shop():
         print(e)
 
 
+# Define the endpoint for emptying cart
 @app.route("/empty")
 @login_required
 def empty_cart():
+    """
+    function to empty the user's cart
+    :return: returns user to the shop page after emptying the cart
+    """
     try:
         session["cart_item"] = None
         return redirect(url_for("shop"))
@@ -299,42 +416,17 @@ def empty_cart():
         print(e)
 
 
-@app.route("/delete/<string:code>")
-@login_required
-def delete_product(code):
-    try:
-        all_total_price = 0
-        all_total_quantity = 0
-        session.modified = True
-
-        for item in session["cart_item"].items():
-            if item[0] == code:
-                session["cart_item"].pop(item[0], None)
-                if "cart_item" in session:
-                    for key, value in session["cart_item"].items():
-                        individual_quantity = int(session["cart_item"][key]["quantity"])
-                        individual_price = float(
-                            session["cart_item"][key]["total_price"]
-                        )
-                        all_total_quantity = all_total_quantity + individual_quantity
-                        all_total_price = all_total_price + individual_price
-                break
-
-        if all_total_quantity == 0:
-            session.clear()
-        else:
-            session["all_total_quantity"] = all_total_quantity
-            session["all_total_price"] = all_total_price
-
-        # return redirect('/')
-        return redirect(url_for("shop"))
-    except Exception as e:
-        print(e)
-
-
+# Define the endpoint for checkout/cart page
 @app.route("/cart", methods=["GET", "POST"])
 @login_required
 def cart_load():
+    """
+    function checks if user's access role is user or not
+    GET - if access role is user then renders the checkout page
+    POST - if access role is user then user can place orders
+    :return: GET returns user to checkout page if accesslevel is user or
+    returns user to index page if accesslevels is not user
+    """
     user = Users.query.filter_by(id=session["_user_id"]).first()
     if user.accesslevel == "admin" or user.accesslevel == "fulfillment":
         return redirect(url_for("index"))
@@ -384,7 +476,14 @@ def cart_load():
         return render_template("checkout.html")
 
 
+# This function is used to merge individual item arrays into the existing cart array
 def array_merge(first_array, second_array):
+    """
+    function to merge cart items
+    :param first_array: existing cart array
+    :param second_array: user selected product's array
+    :return: return merged cart array
+    """
     if isinstance(first_array, list) and isinstance(second_array, list):
         return first_array + second_array
     elif isinstance(first_array, dict) and isinstance(second_array, dict):
@@ -394,9 +493,14 @@ def array_merge(first_array, second_array):
     return False
 
 
+# Define the endpoint for adding a product into the database from the admin portal
 @app.route("/add_product", methods=["POST"])
 @login_required
 def add_product():
+    """
+    Function allows admin to add a product into the database
+    :return: returns to admin page with message about result of addition procedure.
+    """
     if (
         not request.form.get("name")
         or not request.form.get("brand")
@@ -420,9 +524,14 @@ def add_product():
     return redirect(url_for("admin"))
 
 
+# Define the endpoint for deleting a product from the database from the admin portal
 @app.route("/delete_product_data", methods=["POST"])
 @login_required
 def delete_product_data():
+    """
+    Function allows admin to delete a product from the database using the code as unique identifier
+    :return: returns to admin page with message about result of deletion procedure.
+    """
     if request.form.get("code"):
         product = Products.query.filter_by(code=request.form.get("code")).first()
         if product is not None:
@@ -440,9 +549,14 @@ def delete_product_data():
     return redirect(url_for("admin"))
 
 
+# Define the endpoint for updating a product into the database from the admin portal
 @app.route("/update_product", methods=["POST"])
 @login_required
 def update_product():
+    """
+    Function allows admin to update a product into the database using the code as unique identifier
+    :return: returns to admin page with message about result of update procedure
+    """
     if request.form.get("code"):
         if (
             not request.form.get("name")
@@ -474,5 +588,15 @@ def update_product():
     return redirect(url_for("admin"))
 
 
+"""
+Run the app with the desired flags
+ssl_context is used for specifying the path to the ssl certificate.
+The "adhoc" parameter creates a dummy cert which enables us to use https
+without buying a real certificate from a Certificate Authority.
+This is only implemented for this academic exercise and we do not recommend
+adopting this approach in any production environments.
+Port flag can be used to specify different ports.
+Debug can be enabled by setting to True for debugging purposes.
+"""
 if __name__ == "__main__":
     app.run(ssl_context="adhoc", port=443, debug=False)
