@@ -4,15 +4,20 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
+import re
+import configparser
 
+#Read config from ini file
+config = configparser.ConfigParser()
+config.read('./config.ini')
 #Create the application
 app = Flask(__name__)
 
 # Define the configuration for your application
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "mssql+pyodbc://root:root@localhost:1433/users_db?driver=ODBC Driver 17 for SQL Server"
-app.config["SECRET_KEY"] = "abc"
+] = config['sql']['uri']
+app.config["SECRET_KEY"] = config['flask']['session_secret']
 app.static_folder = "./static"
 app.config.update(
     SESSION_COOKIE_SECURE=True,
@@ -72,10 +77,10 @@ class Users(UserMixin, db.Model):
     isactive - default value set to yes.
     """
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    accesslevel = db.Column(db.String(5), default="user", nullable=False)
+    username = db.Column(db.String(13), unique=True, nullable=False)
+    password = db.Column(db.String(12, 128), nullable=False)
+    email = db.Column(db.String(30), unique=True, nullable=False)
+    accesslevel = db.Column(db.String(13), default="user", nullable=False)
     isactive = db.Column(db.String(3), default="yes", nullable=False)
 
 
@@ -90,11 +95,11 @@ class Products(db.Model):
         image - name of the image file for the product stored in /static/images.
         """
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
-    brand = db.Column(db.String(255), nullable=False)
-    code = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
+    brand = db.Column(db.String(128), nullable=False)
+    code = db.Column(db.String(128), nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    image = db.Column(db.String(255), nullable=False)
+    image = db.Column(db.String(128), nullable=False)
 
 
 # This class defines the schema model for orders table in the database
@@ -110,13 +115,13 @@ class Orders(db.Model):
             Address - Delivery address for the specific order.
             """
     order_id = db.Column(db.Integer, primary_key=True)
-    product = db.Column(db.String(255), nullable=False)
-    name = db.Column(db.String(255), nullable=False)
-    username = db.Column(db.String(255), nullable=False)
-    email = db.Column(db.String(255), nullable=False)
-    price = db.Column(db.String(255), nullable=False)
-    quantity = db.Column(db.String(255), nullable=False)
-    Address = db.Column(db.String(255), nullable=False)
+    product = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
+    username = db.Column(db.String(128), nullable=False)
+    email = db.Column(db.String(128), nullable=False)
+    price = db.Column(db.String(128), nullable=False)
+    quantity = db.Column(db.String(128), nullable=False)
+    Address = db.Column(db.String(128), nullable=False)
 
 
 # Add the initialized db to the application context
@@ -131,7 +136,10 @@ with app.app_context():
 # Function to load the user in login manager
 @login_manager.user_loader
 def user_loader(user_id):
-    return Users.query.get(user_id)
+    try:
+        return Users.query.get(user_id)
+    except Exception as e:
+        return "Oops....Unexpected error. Contact Site Administrator if it persists."
 
 
 # Define the endpoint for admin portal
@@ -142,13 +150,19 @@ def admin():
     Function to check user's access level for admin capabilities.
     :return: return to admin portal if user's access level is admin or redirect to index
     """
-    user = Users.query.filter_by(id=session["_user_id"]).first()
-    if user.accesslevel == "admin":
-        try:
-            product = Products.query.all()
-            return render_template("admin.html", products=product)
-        except Exception as e:
-            print(e)
+    try:
+        user = Users.query.filter_by(id=session["_user_id"]).first()
+    except Exception as e:
+        return print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+    if user.accesslevel:
+        if user.accesslevel == "admin":
+            try:
+                product = Products.query.all()
+                return render_template("admin.html", products=product)
+            except Exception as e:
+                print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
+        else:
+            return redirect(url_for("index"))
     else:
         return redirect(url_for("index"))
 
@@ -169,6 +183,21 @@ def register():
             or request.form.get("password")
             or request.form.get("email")
         ):
+            if len(request.form.get("username")) > 13:
+                flash("Username can be max 13 characters.")
+                return redirect(url_for("register"))
+            elif len(request.form.get("password")) > 128:
+                flash("Password can be max 128 characters.")
+                return redirect(url_for("register"))
+            elif len(request.form.get("password")) > 30:
+                flash("Email can be max 30 characters.")
+                return redirect(url_for("register"))
+            elif bool(re.match('^[a-zA-Z0-9]*$', request.form.get("username")) == False):
+                flash("Username cannot contain any special characters")
+                return redirect(url_for("register"))
+            elif len(request.form.get("password")) < 12:
+                flash("Password should be minimum 12 characters")
+                return redirect(url_for("register"))
             try:
                 user = Users(
                     username=request.form.get("username"),
@@ -182,7 +211,7 @@ def register():
                 flash("User Created. You can now log in")
                 return redirect(url_for("login"))
             except Exception as e:
-                flash("Exception Occured. Contact Administrator if this persists.")
+                flash("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
                 return redirect(url_for("register"))
         flash("one of the required fields is blank")
         return redirect(url_for("register"))
@@ -200,22 +229,25 @@ def login():
     """
     if request.method == "POST":
         if request.form.get("username") or request.form.get("password"):
-            user = Users.query.filter_by(username=request.form.get("username")).first()
-            if user is None:
-                flash("Incorrect Username")
-                return redirect(url_for("login"))
-            if bcrypt.check_password_hash(user.password, request.form.get("password")):
-                if user.isactive == "yes":
-                    login_user(user)
-                    flash("You are now logged in")
-                    if user.accesslevel == "admin":
-                        return redirect(url_for("admin"))
-                    if user.accesslevel == "fulfillment":
-                        return redirect(url_for("orders"))
-                    return redirect(url_for("home"))
-                flash("Your account is disabled. Contact administrator")
-                return redirect(url_for("login"))
-            flash("Incorrect Password")
+            try:
+                user = Users.query.filter_by(username=request.form.get("username")).first()
+                if user is None:
+                    flash("Incorrect Username")
+                    return redirect(url_for("login"))
+                if bcrypt.check_password_hash(user.password, request.form.get("password")):
+                    if user.isactive == "yes":
+                        login_user(user)
+                        flash("You are now logged in")
+                        if user.accesslevel == "admin":
+                            return redirect(url_for("admin"))
+                        if user.accesslevel == "fulfillment":
+                            return redirect(url_for("orders"))
+                        return redirect(url_for("home"))
+                    flash("Your account is disabled. Contact administrator")
+                    return redirect(url_for("login"))
+                flash("Incorrect Password")
+            except Exception as e:
+                print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
             return redirect(url_for("login"))
         flash("one of the required fields is blank")
         return redirect(url_for("login"))
@@ -230,10 +262,13 @@ def logout():
     function to logout currently logged in user.
     :return: returns to home page with user logged out message
     """
-    logout_user()
-    session.clear()
-    flash("You have been logged out")
-    return redirect(url_for("home"))
+    try:
+        logout_user()
+        session.clear()
+        flash("You have been logged out")
+        return redirect(url_for("home"))
+    except Exception as e:
+        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
 
 
 # Define the endpoint for default path
@@ -300,15 +335,15 @@ def orders():
     :return: returns to order management page if user has the right role
     or redirects to index if user does not have fulfillment role.
     """
-    user = Users.query.filter_by(id=session["_user_id"]).first()
-    if user.accesslevel == "fulfillment":
-        try:
+    try:
+        user = Users.query.filter_by(id=session["_user_id"]).first()
+        if user.accesslevel == "fulfillment":
             total_orders = Orders.query.all()
             return render_template("orders.html", orders=total_orders)
-        except Exception as e:
-            print(e)
-    else:
-        return redirect(url_for("index"))
+        else:
+            return redirect(url_for("index"))
+    except Exception as e:
+        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
 
 
 # Define the endpoint for adding items to cart
@@ -383,7 +418,7 @@ def add_product_to_cart():
         else:
             return "Error while adding item to cart"
     except Exception as e:
-        print(e)
+        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
 
 
 # Define endpoint for shop page
@@ -398,7 +433,7 @@ def shop():
         product = Products.query.all()
         return render_template("shop.html", products=product)
     except Exception as e:
-        print(e)
+        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
 
 
 # Define the endpoint for emptying cart
@@ -413,7 +448,7 @@ def empty_cart():
         session["cart_item"] = None
         return redirect(url_for("shop"))
     except Exception as e:
-        print(e)
+        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
 
 
 # Define the endpoint for checkout/cart page
@@ -427,53 +462,56 @@ def cart_load():
     :return: GET returns user to checkout page if accesslevel is user or
     returns user to index page if accesslevels is not user
     """
-    user = Users.query.filter_by(id=session["_user_id"]).first()
-    if user.accesslevel == "admin" or user.accesslevel == "fulfillment":
-        return redirect(url_for("index"))
-    if request.method == "POST":
+    try:
+        user = Users.query.filter_by(id=session["_user_id"]).first()
+        if user.accesslevel == "admin" or user.accesslevel == "fulfillment":
+            return redirect(url_for("index"))
+        if request.method == "POST":
+            total_items = []
+            if "cart_item" in session:
+                if session["cart_item"] is not None:
+                    for item in (session["cart_item"]).keys():
+                        total_items.append(session["cart_item"][item])
+            for item in total_items:
+                user = Users.query.filter_by(id=session["_user_id"]).first()
+                Address = (
+                    request.form.get("fullname")
+                    + ", "
+                    + request.form.get("address")
+                    + ", "
+                    + request.form.get("city")
+                    + ", "
+                    + request.form.get("eir")
+                )
+                order = Orders(
+                    product=item["code"],
+                    name=item["name"],
+                    username=user.username,
+                    email=user.email,
+                    price=item["price"],
+                    quantity=item["quantity"],
+                    Address=Address,
+                )
+                db.session.add(order)
+                db.session.commit()
+            return redirect(url_for("empty_cart"))
         total_items = []
         if "cart_item" in session:
             if session["cart_item"] is not None:
                 for item in (session["cart_item"]).keys():
                     total_items.append(session["cart_item"][item])
-        for item in total_items:
-            user = Users.query.filter_by(id=session["_user_id"]).first()
-            Address = (
-                request.form.get("fullname")
-                + ", "
-                + request.form.get("address")
-                + ", "
-                + request.form.get("city")
-                + ", "
-                + request.form.get("eir")
-            )
-            order = Orders(
-                product=item["code"],
-                name=item["name"],
-                username=user.username,
-                email=user.email,
-                price=item["price"],
-                quantity=item["quantity"],
-                Address=Address,
-            )
-            db.session.add(order)
-            db.session.commit()
-        return redirect(url_for("empty_cart"))
-    total_items = []
-    if "cart_item" in session:
-        if session["cart_item"] is not None:
-            for item in (session["cart_item"]).keys():
-                total_items.append(session["cart_item"][item])
-            total_items_count = len(total_items)
-            return render_template(
-                "checkout.html",
-                total_items=total_items,
-                total_items_count=total_items_count,
-            )
+                total_items_count = len(total_items)
+                return render_template(
+                    "checkout.html",
+                    total_items=total_items,
+                    total_items_count=total_items_count,
+                )
+            else:
+                return render_template("checkout.html")
         else:
             return render_template("checkout.html")
-    else:
-        return render_template("checkout.html")
+    except Exception as e:
+        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
 
 
 # This function is used to merge individual item arrays into the existing cart array
@@ -501,27 +539,30 @@ def add_product():
     Function allows admin to add a product into the database
     :return: returns to admin page with message about result of addition procedure.
     """
-    if (
-        not request.form.get("name")
-        or not request.form.get("brand")
-        or not request.form.get("price")
-        or not request.form.get("image")
-    ):
-        flash("One of the mandatory fields not supplied")
+    try:
+        if (
+            not request.form.get("name")
+            or not request.form.get("brand")
+            or not request.form.get("price")
+            or not request.form.get("image")
+        ):
+            flash("One of the mandatory fields not supplied")
+            return redirect(url_for("admin"))
+        product = Products(
+            name=request.form.get("name"),
+            brand=request.form.get("brand"),
+            code=request.form.get("code"),
+            price=request.form.get("price"),
+            image=request.form.get("image"),
+        )
+        db.session.add(product)
+        db.session.commit()
+        flash(
+            "Data for product with code {} has been added".format(request.form.get("code"))
+        )
         return redirect(url_for("admin"))
-    product = Products(
-        name=request.form.get("name"),
-        brand=request.form.get("brand"),
-        code=request.form.get("code"),
-        price=request.form.get("price"),
-        image=request.form.get("image"),
-    )
-    db.session.add(product)
-    db.session.commit()
-    flash(
-        "Data for product with code {} has been added".format(request.form.get("code"))
-    )
-    return redirect(url_for("admin"))
+    except Exception as e:
+        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
 
 
 # Define the endpoint for deleting a product from the database from the admin portal
@@ -532,21 +573,24 @@ def delete_product_data():
     Function allows admin to delete a product from the database using the code as unique identifier
     :return: returns to admin page with message about result of deletion procedure.
     """
-    if request.form.get("code"):
-        product = Products.query.filter_by(code=request.form.get("code")).first()
-        if product is not None:
-            db.session.delete(product)
-            db.session.commit()
-            flash(
-                "Data for product with code {} has been deleted".format(
-                    request.form.get("code")
+    try:
+        if request.form.get("code"):
+            product = Products.query.filter_by(code=request.form.get("code")).first()
+            if product is not None:
+                db.session.delete(product)
+                db.session.commit()
+                flash(
+                    "Data for product with code {} has been deleted".format(
+                        request.form.get("code")
+                    )
                 )
-            )
+                return redirect(url_for("admin"))
+            flash("Ooops.....Incorrect Code Supplied")
             return redirect(url_for("admin"))
-        flash("Ooops.....Incorrect Code Supplied")
+        flash("You need to supply the product's code value to be able to delete it")
         return redirect(url_for("admin"))
-    flash("You need to supply the product's code value to be able to delete it")
-    return redirect(url_for("admin"))
+    except Exception as e:
+        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
 
 
 # Define the endpoint for updating a product into the database from the admin portal
@@ -557,35 +601,38 @@ def update_product():
     Function allows admin to update a product into the database using the code as unique identifier
     :return: returns to admin page with message about result of update procedure
     """
-    if request.form.get("code"):
-        if (
-            not request.form.get("name")
-            and not request.form.get("brand")
-            and not request.form.get("price")
-            and not request.form.get("image")
-        ):
-            flash("You need to supply at least one value to update apart from code")
-            return redirect(url_for("admin"))
-        product = Products.query.filter_by(code=request.form.get("code")).first()
-        if request.form.get("name"):
-            product.name = request.form.get("name")
-        if request.form.get("brand"):
-            product.brand = request.form.get("brand")
-        if request.form.get("price"):
-            product.price = request.form.get("price")
-        if request.form.get("image"):
-            product.image = request.form.get("image")
-        db.session.commit()
-        flash(
-            "Data for product with code {} has been updated".format(
-                request.form.get("code")
+    try:
+        if request.form.get("code"):
+            if (
+                not request.form.get("name")
+                and not request.form.get("brand")
+                and not request.form.get("price")
+                and not request.form.get("image")
+            ):
+                flash("You need to supply at least one value to update apart from code")
+                return redirect(url_for("admin"))
+            product = Products.query.filter_by(code=request.form.get("code")).first()
+            if request.form.get("name"):
+                product.name = request.form.get("name")
+            if request.form.get("brand"):
+                product.brand = request.form.get("brand")
+            if request.form.get("price"):
+                product.price = request.form.get("price")
+            if request.form.get("image"):
+                product.image = request.form.get("image")
+            db.session.commit()
+            flash(
+                "Data for product with code {} has been updated".format(
+                    request.form.get("code")
+                )
             )
+            return redirect(url_for("admin"))
+        flash(
+            "You need to supply the product's code value to be able to update information"
         )
         return redirect(url_for("admin"))
-    flash(
-        "You need to supply the product's code value to be able to update information"
-    )
-    return redirect(url_for("admin"))
+    except Exception as e:
+        print("Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists.")
 
 
 """
@@ -599,4 +646,4 @@ Port flag can be used to specify different ports.
 Debug can be enabled by setting to True for debugging purposes.
 """
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc", port=443, debug=False)
+    app.run(ssl_context="adhoc", port=int(config['flask']['port']), debug=False)
