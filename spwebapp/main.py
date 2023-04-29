@@ -195,7 +195,7 @@ def register():
             elif len(request.form.get("password")) > 128:
                 flash("Password can be max 128 characters.")
                 return redirect(url_for("register"))
-            elif len(request.form.get("password")) > 30:
+            elif len(request.form.get("email")) > 30:
                 flash("Email can be max 30 characters.")
                 return redirect(url_for("register"))
             elif bool(
@@ -225,6 +225,8 @@ def register():
                 return redirect(url_for("register"))
         flash("one of the required fields is blank")
         return redirect(url_for("register"))
+    if session['_user_id']:
+        return redirect(url_for("index"))
     return render_template("sign_up.html")
 
 
@@ -244,7 +246,7 @@ def login():
                     username=request.form.get("username")
                 ).first()
                 if user is None:
-                    flash("Incorrect Username")
+                    flash("Incorrect Username or Password")
                     return redirect(url_for("login"))
                 if bcrypt.check_password_hash(
                     user.password, request.form.get("password")
@@ -259,7 +261,7 @@ def login():
                         return redirect(url_for("home"))
                     flash("Your account is disabled. Contact administrator")
                     return redirect(url_for("login"))
-                flash("Incorrect Password")
+                flash("Incorrect Username or Password")
             except Exception as e:
                 print(
                     "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
