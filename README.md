@@ -8,7 +8,7 @@ The main branch has secure code while the develop branch has vulnerable code. Th
 
 ## Use Case
 
-![MicrosoftTeams-image (2)](https://user-images.githubusercontent.com/65346396/235332740-0e0aa4d4-890f-4d16-a6d0-5d15d423343d.png)
+![Untitled(4)](https://user-images.githubusercontent.com/43415883/235349736-d47e51d2-60bb-48f0-a2cd-2dbceefadb74.jpg)
 
 ## Prerequisites
 
