@@ -46,10 +46,10 @@ def add_security_header(response):
     :param response:
     :return:
     """
-    response.headers[
-        "Content-Security-Policy-Report-Only"
-    ] = "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors " \
+    response.headers["Content-Security-Policy-Report-Only"] = (
+        "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors "
         "'self'; form-action 'self';"
+    )
     response.headers["Server"] = "Not Gonna Tell Ya"
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
