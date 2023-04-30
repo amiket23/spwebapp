@@ -1,12 +1,21 @@
 # Import required modules
-import configparser
-import re
+import configparser, re, logging
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
+
+
+# Set config for logging
+for handler in logging.root.handlers[:]:
+    logging.root.removeHandler(handler)
+logging.basicConfig(
+    filename="./spwebapp.log",
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
 
 # Read config from ini file
 config = configparser.ConfigParser()
@@ -141,6 +150,7 @@ def user_loader(user_id):
     try:
         return Users.query.get(user_id)
     except Exception as e:
+        logging.exception(e)
         return "Oops....Unexpected error. Contact Site Administrator if it persists."
 
 
@@ -155,6 +165,7 @@ def admin():
     try:
         user = Users.query.filter_by(id=session["_user_id"]).first()
     except Exception as e:
+        logging.exception(e)
         return print(
             "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
         )
@@ -164,6 +175,7 @@ def admin():
                 product = Products.query.all()
                 return render_template("admin.html", products=product)
             except Exception as e:
+                logging.exception(e)
                 print(
                     "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
                 )
@@ -219,6 +231,7 @@ def register():
                 flash("User Created. You can now log in")
                 return redirect(url_for("login"))
             except Exception as e:
+                logging.exception(e)
                 flash(
                     "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
                 )
@@ -229,6 +242,7 @@ def register():
         if session['_user_id']:
             return redirect(url_for("index"))
     except Exception as e:
+        logging.exception(e)
         return render_template("sign_up.html")
 
 
@@ -265,6 +279,7 @@ def login():
                     return redirect(url_for("login"))
                 flash("Incorrect Username or Password")
             except Exception as e:
+                logging.exception(e)
                 print(
                     "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
                 )
@@ -288,6 +303,7 @@ def logout():
         flash("You have been logged out")
         return redirect(url_for("home"))
     except Exception as e:
+        logging.exception(e)
         print(
             "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
         )
@@ -365,6 +381,7 @@ def orders():
         else:
             return redirect(url_for("index"))
     except Exception as e:
+        logging.exception(e)
         print(
             "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
         )
@@ -442,6 +459,7 @@ def add_product_to_cart():
         else:
             return "Error while adding item to cart"
     except Exception as e:
+        logging.exception(e)
         print(
             "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
         )
@@ -459,6 +477,7 @@ def shop():
         product = Products.query.all()
         return render_template("shop.html", products=product)
     except Exception as e:
+        logging.exception(e)
         print(
             "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
         )
@@ -476,6 +495,7 @@ def empty_cart():
         session["cart_item"] = None
         return redirect(url_for("shop"))
     except Exception as e:
+        logging.exception(e)
         print(
             "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
         )
@@ -541,6 +561,7 @@ def cart_load():
         else:
             return render_template("checkout.html")
     except Exception as e:
+        logging.exception(e)
         print(
             "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
         )
@@ -596,6 +617,7 @@ def add_product():
         )
         return redirect(url_for("admin"))
     except Exception as e:
+        logging.exception(e)
         print(
             "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
         )
@@ -626,6 +648,7 @@ def delete_product_data():
         flash("You need to supply the product's code value to be able to delete it")
         return redirect(url_for("admin"))
     except Exception as e:
+        logging.exception(e)
         print(
             "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
         )
@@ -670,6 +693,7 @@ def update_product():
         )
         return redirect(url_for("admin"))
     except Exception as e:
+        logging.exception(e)
         print(
             "Oops....Unexpected error. Try reloading the page. Contact Site Administrator if it persists."
         )
