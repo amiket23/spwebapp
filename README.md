@@ -8,7 +8,7 @@ The main branch has secure code while the develop branch has vulnerable code. Th
 
 ## Use Case
 
-![MicrosoftTeams-image (1)](https://user-images.githubusercontent.com/65346396/235259148-fecce913-d77f-4372-91c0-b263f42eab6e.png)
+![MicrosoftTeams-image (2)](https://user-images.githubusercontent.com/65346396/235332740-0e0aa4d4-890f-4d16-a6d0-5d15d423343d.png)
 
 ## Prerequisites
 
@@ -21,6 +21,9 @@ The package has been tested with the following prerequisites:
 + Flask-Bcrypt 1.0.1
 + Flask-Login 0.6.2
 + Flask-SQLAlchemy 3.0.3
++ Flask-WTF 1.1.1
++ pyOpenSSL 23.1.1
++ pyodbc 4.0.39
 
 ## Quickstart: Setting up Python
 ### Instructions for Windows:
