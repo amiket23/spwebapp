@@ -1,12 +1,13 @@
 # Import required modules
-import configparser, re, logging
+import configparser
+import logging
+import re
 
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
-
 
 # Set config for logging
 for handler in logging.root.handlers[:]:
@@ -239,7 +240,7 @@ def register():
         flash("one of the required fields is blank")
         return redirect(url_for("register"))
     try:
-        if session['_user_id']:
+        if session["_user_id"]:
             return redirect(url_for("index"))
     except Exception as e:
         logging.exception(e)
